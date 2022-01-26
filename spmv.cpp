@@ -19,7 +19,6 @@ void spmv_intrinsics(uint64_t n, const uint64_t *row, const uint64_t *col,
     uint64_t p = row[i];
     uint64_t vlmax = vsetvlmax_e64m1();
     vfloat64m1_t s = vfmv_v_f_f64m1(0.0, vlmax);
-    vfloat64m1_t zero = vfmv_v_f_f64m1(0.0, vlmax);
 
     uint64_t vl;
     for (uint64_t p = row[i]; p < row[i + 1]; p += vl) {
@@ -38,8 +37,8 @@ void spmv_intrinsics(uint64_t n, const uint64_t *row, const uint64_t *col,
       s = vfmacc(s, mat_p, x_col_p, vl);
     }
 
-    vfloat64m1_t sum;
-    sum = vfredusum(zero, s, zero, vlmax);
+    vfloat64m1_t sum = vfmv_v_f_f64m1(0.0, vlmax);
+    sum = vfredusum(sum, s, sum, vlmax);
     y[i] = vfmv_f_s_f64m1_f64(sum);
   }
 }

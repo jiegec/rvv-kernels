@@ -9,7 +9,7 @@ all: bin/spmv bin/spmv.dump
 spike-%: bin/%
 	$(SPIKE) --isa=rv64gcv $(PK) $^
 
-bin/spmv: spmv.o spmv_main.o
+bin/spmv: spmv.o spmv_main.o common.o
 	$(LLVM)/bin/clang++ $(CFLAGS) $^ -o $@
 
 %.o: %.cpp
@@ -17,3 +17,6 @@ bin/spmv: spmv.o spmv_main.o
 
 %.dump: %
 	$(LLVM)/bin/llvm-objdump --mattr=+v -S $^ > $@
+
+clean:
+	rm -rf *.o bin/*

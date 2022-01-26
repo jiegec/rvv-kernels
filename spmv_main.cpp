@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "common.h"
+
 const int N = 1000;
 const int M = 10;
+const int REPEAT = 100;
 
 void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
           const double *mat, const double *x, double *y);
@@ -43,6 +46,20 @@ int main() {
     }
   }
   printf("Test passed!\n");
+
+  uint64_t begin = get_time_us();
+  for (int i = 0; i < REPEAT; i++) {
+    spmv(N, row, col, mat, x, y1);
+  }
+  uint64_t elapsed = get_time_us() - begin;
+  printf("spmv scalar: %.2f us\n", (double)elapsed / REPEAT);
+
+  begin = get_time_us();
+  for (int i = 0; i < REPEAT; i++) {
+    spmv_intrinsics(N, row, col, mat, x, y1);
+  }
+  elapsed = get_time_us() - begin;
+  printf("spmv vector: %.2f us\n", (double)elapsed / REPEAT);
 
   return 0;
 }
