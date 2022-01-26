@@ -52,14 +52,18 @@ int main() {
     spmv(N, row, col, mat, x, y1);
   }
   uint64_t elapsed = get_time_us() - begin;
-  printf("spmv scalar: %.2f us\n", (double)elapsed / REPEAT);
+  double gflops = 2e-3 * N * M * REPEAT / elapsed;
+  printf("spmv scalar: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
+         gflops);
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {
     spmv_intrinsics(N, row, col, mat, x, y1);
   }
   elapsed = get_time_us() - begin;
-  printf("spmv vector: %.2f us\n", (double)elapsed / REPEAT);
+  gflops = 2e-3 * N * M * REPEAT / elapsed;
+  printf("spmv vector: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
+         gflops);
 
   return 0;
 }
