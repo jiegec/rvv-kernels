@@ -22,7 +22,7 @@ void spmv_intrinsics(uint64_t n, const uint64_t *row, const uint64_t *col,
 
     uint64_t vl;
     for (uint64_t p = row[i]; p < row[i + 1]; p += vl) {
-      vl = vsetvl_e64m1(n);
+      vl = vsetvl_e64m1(row[i + 1] - p);
       // load mat[p]
       vfloat64m1_t mat_p = vle64_v_f64m1(&mat[p], vl);
 
