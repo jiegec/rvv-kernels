@@ -21,9 +21,10 @@ int main() {
   // each row has M non zero elements
   for (int i = 0; i < N; i++) {
     x[i] = (double)rand() / RAND_MAX;
-    y[i] = 0.0;
-    y1[i] = 0.0;
-    y2[i] = 0.0;
+    double val = (double)rand() / RAND_MAX;
+    y[i] = val;
+    y1[i] = val;
+    y2[i] = val;
   }
   double a = (double)rand() / RAND_MAX;
 

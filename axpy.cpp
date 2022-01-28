@@ -13,7 +13,8 @@ void axpy_rvv(uint64_t n, double a, const double *x, double *y) {
     uint64_t vl = vsetvl_e64m1(n - i);
 
     vfloat64m1_t x_data = vle64_v_f64m1(&x[i], vl);
-    vfloat64m1_t y_data = vfmul(x_data, a, vl);
+    vfloat64m1_t y_data = vle64_v_f64m1(&y[i], vl);
+    y_data = vfmacc(y_data, a, x_data, vl);
 
     vse64_v_f64m1(&y[i], y_data, vl);
 
@@ -27,7 +28,8 @@ void axpy_rvv2(uint64_t n, double a, const double *x, double *y) {
   for (i = 0; i + vlmax < n;) {
 
     vfloat64m1_t x_data = vle64_v_f64m1(&x[i], vlmax);
-    vfloat64m1_t y_data = vfmul(x_data, a, vlmax);
+    vfloat64m1_t y_data = vle64_v_f64m1(&y[i], vlmax);
+    y_data = vfmacc(y_data, a, x_data, vlmax);
 
     vse64_v_f64m1(&y[i], y_data, vlmax);
 
