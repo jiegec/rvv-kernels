@@ -1,4 +1,4 @@
-_Z4spmvmPKmS0_PKdS2_Pd:                 # @_Z4spmvmPKmS0_PKdS2_Pd
+spmv:                                   # @spmv
 	beqz	a0, .LBB0_6
 	ld	t2, 0(a1)
 	li	a6, 0
@@ -40,7 +40,7 @@ _Z4spmvmPKmS0_PKdS2_Pd:                 # @_Z4spmvmPKmS0_PKdS2_Pd
 .LBB0_6:
 	ret
                                         # -- End function
-_Z8spmv_rvvmPKmS0_PKdS2_Pd:             # @_Z8spmv_rvvmPKmS0_PKdS2_Pd
+spmv_rvv:                               # @spmv_rvv
 	beqz	a0, .LBB1_5
 	li	a6, 0
 	li	a7, 8
@@ -85,7 +85,7 @@ _Z8spmv_rvvmPKmS0_PKdS2_Pd:             # @_Z8spmv_rvvmPKmS0_PKdS2_Pd
 .LBB1_5:
 	ret
                                         # -- End function
-_Z9spmv_rvv2mPKmS0_PKdS2_Pd:            # @_Z9spmv_rvv2mPKmS0_PKdS2_Pd
+spmv_rvv2:                              # @spmv_rvv2
 	addi	sp, sp, -16
 	sd	s0, 8(sp)                       # 8-byte Folded Spill
 	vsetvli	a6, zero, e64, m1, ta, mu

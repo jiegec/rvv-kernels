@@ -9,12 +9,14 @@ const int N = 1000;
 const int M = 10;
 const int REPEAT = 100;
 
+extern "C" {
 void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
           const double *mat, const double *x, double *y);
 void spmv_rvv(uint64_t n, const uint64_t *row, const uint64_t *col,
               const double *mat, const double *x, double *y);
 void spmv_rvv2(uint64_t n, const uint64_t *row, const uint64_t *col,
                const double *mat, const double *x, double *y);
+}
 
 int main() {
   uint64_t row[N + 1];

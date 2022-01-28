@@ -1,6 +1,7 @@
 #include "riscv_vector.h"
 #include <stdlib.h>
 
+extern "C" {
 void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
           const double *mat, const double *x, double *y) {
   for (uint64_t i = 0; i < n; i++) {
@@ -75,4 +76,5 @@ void spmv_rvv2(uint64_t n, const uint64_t *row, const uint64_t *col,
     }
     y[i] = res;
   }
+}
 }
