@@ -78,7 +78,7 @@ int main() {
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {
-    spmv_rvv(N, row, col, mat, x, y1);
+    spmv_rvv2(N, row, col, mat, x, y1);
   }
   elapsed = get_time_us() - begin;
   gflops = 2e-3 * N * M * REPEAT / elapsed;
