@@ -12,6 +12,9 @@ spike-%: bin/%
 bin/spmv: spmv.o spmv_main.o common.o
 	$(LLVM)/bin/clang++ $(CFLAGS) $^ -o $@
 
+bin/axpy: axpy.o axpy_main.o common.o
+	$(LLVM)/bin/clang++ $(CFLAGS) $^ -o $@
+
 %.o: %.cpp
 	$(LLVM)/bin/clang++ -c $(CFLAGS) $^ -o $@
 
