@@ -20,3 +20,21 @@ void axpy_rvv(uint64_t n, double a, const double *x, double *y) {
     i += vl;
   }
 }
+
+void axpy_rvv2(uint64_t n, double a, const double *x, double *y) {
+  uint64_t vlmax = vsetvlmax_e64m1();
+  uint64_t i;
+  for (i = 0; i + vlmax < n;) {
+
+    vfloat64m1_t x_data = vle64_v_f64m1(&x[i], vlmax);
+    vfloat64m1_t y_data = vfmul(x_data, a, vlmax);
+
+    vse64_v_f64m1(&y[i], y_data, vlmax);
+
+    i += vlmax;
+  }
+
+  for (; i < n; i++) {
+    y[i] += a * x[i];
+  }
+}
