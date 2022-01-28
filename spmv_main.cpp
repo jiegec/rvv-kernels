@@ -64,7 +64,7 @@ int main() {
   }
   uint64_t elapsed = get_time_us() - begin;
   double gflops = 2e-3 * N * M * REPEAT / elapsed;
-  printf("spmv scalar: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
+  printf("spmv simple: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
          gflops);
 
   begin = get_time_us();
@@ -73,8 +73,7 @@ int main() {
   }
   elapsed = get_time_us() - begin;
   gflops = 2e-3 * N * M * REPEAT / elapsed;
-  printf("spmv vector: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
-         gflops);
+  printf("spmv rvv: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {
@@ -82,8 +81,7 @@ int main() {
   }
   elapsed = get_time_us() - begin;
   gflops = 2e-3 * N * M * REPEAT / elapsed;
-  printf("spmv vector2: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
-         gflops);
+  printf("spmv rvv2: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   return 0;
 }
