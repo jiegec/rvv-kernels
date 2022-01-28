@@ -12,11 +12,10 @@ void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
   }
 }
 
-void spmv_intrinsics(uint64_t n, const uint64_t *row, const uint64_t *col,
-                     const double *mat, const double *x, double *y) {
+void spmv_rvv(uint64_t n, const uint64_t *row, const uint64_t *col,
+              const double *mat, const double *x, double *y) {
 
   for (uint64_t i = 0; i < n; i++) {
-    uint64_t p = row[i];
     uint64_t vlmax = vsetvlmax_e64m1();
     vfloat64m1_t s = vfmv_v_f_f64m1(0.0, vlmax);
 
@@ -40,5 +39,40 @@ void spmv_intrinsics(uint64_t n, const uint64_t *row, const uint64_t *col,
     vfloat64m1_t sum = vfmv_v_f_f64m1(0.0, vlmax);
     sum = vfredusum(sum, s, sum, vlmax);
     y[i] = vfmv_f_s_f64m1_f64(sum);
+  }
+}
+
+void spmv_rvv2(uint64_t n, const uint64_t *row, const uint64_t *col,
+               const double *mat, const double *x, double *y) {
+
+  uint64_t vlmax = vsetvlmax_e64m1();
+  for (uint64_t i = 0; i < n; i++) {
+    vfloat64m1_t s = vfmv_v_f_f64m1(0.0, vlmax);
+
+    uint64_t p;
+    for (p = row[i]; p + vlmax < row[i + 1]; p += vlmax) {
+      // load mat[p]
+      vfloat64m1_t mat_p = vle64_v_f64m1(&mat[p], vlmax);
+
+      // compute byte offset
+      vuint64m1_t col_p = vle64_v_u64m1(&col[p], vlmax);
+      vuint64m1_t col_p_mul = vmul(col_p, 8, vlmax);
+
+      // load x[col[p]]
+      vfloat64m1_t x_col_p = vluxei64(x, col_p_mul, vlmax);
+
+      // s += mat[p] * x[col[p]];
+      s = vfmacc(s, mat_p, x_col_p, vlmax);
+    }
+
+    vfloat64m1_t sum = vfmv_v_f_f64m1(0.0, vlmax);
+    sum = vfredusum(sum, s, sum, vlmax);
+
+    // the res part
+    double res = vfmv_f_s_f64m1_f64(sum);
+    for (; p < row[i + 1]; p++) {
+      res += mat[p] * x[col[p]];
+    }
+    y[i] = res;
   }
 }
