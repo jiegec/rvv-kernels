@@ -4,7 +4,10 @@ PK := pk
 GCC_TOOLCHAIN_DIR := /riscv
 CFLAGS := --target=riscv64-unknown-elf -march=rv64gcv1p0 -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=128 -O2 --gcc-toolchain=$(GCC_TOOLCHAIN_DIR)
 
-all: bin/spmv bin/spmv.dump
+BINS := bin/spmv bin/axpy
+ASMS := spmv.S axpy.S
+
+all: $(BINS) $(ASMS)
 
 spike-%: bin/%
 	$(SPIKE) --isa=rv64gcv $(PK) $^
@@ -18,8 +21,12 @@ bin/axpy: axpy.o axpy_main.o common.o
 %.o: %.cpp
 	$(LLVM)/bin/clang++ -c $(CFLAGS) $^ -o $@
 
+%.S: %.cpp
+	$(LLVM)/bin/clang++ -S $(CFLAGS) $^ -o $@
+	python3 filter.py $@
+
 %.dump: %
 	$(LLVM)/bin/llvm-objdump --mattr=+v -S $^ > $@
 
 clean:
-	rm -rf *.o bin/*
+	rm -rf *.o *.S bin/*

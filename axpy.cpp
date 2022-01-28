@@ -2,6 +2,8 @@
 #include "riscv_vector.h"
 #include <stdlib.h>
 
+extern "C" {
+
 void axpy(uint64_t n, double a, const double *x, double *y) {
   for (uint64_t i = 0; i < n; i++) {
     y[i] += a * x[i];
@@ -39,4 +41,6 @@ void axpy_rvv2(uint64_t n, double a, const double *x, double *y) {
   for (; i < n; i++) {
     y[i] += a * x[i];
   }
+}
+
 }

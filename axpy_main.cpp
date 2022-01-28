@@ -8,9 +8,11 @@
 const int N = 1000;
 const int REPEAT = 100;
 
+extern "C" {
 void axpy(uint64_t n, double a, const double *x, double *y);
 void axpy_rvv(uint64_t n, double a, const double *x, double *y);
 void axpy_rvv2(uint64_t n, double a, const double *x, double *y);
+}
 
 int main() {
   double x[N];
