@@ -6,6 +6,7 @@ void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
           const double *mat, const double *x, double *y) {
   for (uint64_t i = 0; i < n; i++) {
     double s = 0;
+#pragma clang loop vectorize(enable)
     for (uint64_t p = row[i]; p < row[i + 1]; p++) {
       s += mat[p] * x[col[p]];
     }

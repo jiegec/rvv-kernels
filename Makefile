@@ -21,6 +21,9 @@ bin/axpy: axpy.o axpy_main.o common.o
 %.o: %.cpp
 	$(LLVM)/bin/clang++ -c $(CFLAGS) $^ -o $@
 
+%.bc: %.cpp
+	$(LLVM)/bin/clang++ -S -emit-llvm $(CFLAGS) $^ -o $@
+
 %.S: %.cpp
 	$(LLVM)/bin/clang++ -S $(CFLAGS) $^ -o $@
 	python3 filter.py $@
