@@ -5,7 +5,7 @@ GCC_TOOLCHAIN_DIR := /riscv
 CFLAGS := --target=riscv64-unknown-elf -march=rv64gcv1p0 -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=128 -O2 --gcc-toolchain=$(GCC_TOOLCHAIN_DIR)
 
 BINS := bin/spmv bin/axpy
-ASMS := spmv.S axpy.S
+ASMS := spmv.S axpy.S gemm.S
 
 all: $(BINS) $(ASMS)
 
