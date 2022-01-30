@@ -4,13 +4,15 @@
 
 extern "C" {
 
-void axpy(uint64_t n, double a, const double *x, double *y) {
+void axpy(uint64_t n, double a, const double *__restrict x,
+          double *__restrict y) {
   for (uint64_t i = 0; i < n; i++) {
     y[i] += a * x[i];
   }
 }
 
-void axpy_rvv(uint64_t n, double a, const double *x, double *y) {
+void axpy_rvv(uint64_t n, double a, const double *__restrict x,
+              double *__restrict y) {
   for (uint64_t i = 0; i < n;) {
     uint64_t vl = vsetvl_e64m1(n - i);
 
@@ -24,7 +26,8 @@ void axpy_rvv(uint64_t n, double a, const double *x, double *y) {
   }
 }
 
-void axpy_rvv2(uint64_t n, double a, const double *x, double *y) {
+void axpy_rvv2(uint64_t n, double a, const double *__restrict x,
+               double *__restrict y) {
   uint64_t vlmax = vsetvlmax_e64m1();
   uint64_t i;
   for (i = 0; i + vlmax < n;) {
@@ -42,5 +45,4 @@ void axpy_rvv2(uint64_t n, double a, const double *x, double *y) {
     y[i] += a * x[i];
   }
 }
-
 }

@@ -2,8 +2,9 @@
 #include <stdlib.h>
 
 extern "C" {
-void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
-          const double *mat, const double *x, double *y) {
+void spmv(uint64_t n, const uint64_t *__restrict row,
+          const uint64_t *__restrict col, const double *__restrict mat,
+          const double *__restrict x, double *__restrict y) {
   for (uint64_t i = 0; i < n; i++) {
     double s = 0;
 #pragma clang loop vectorize(enable)
@@ -14,8 +15,9 @@ void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
   }
 }
 
-void spmv_rvv(uint64_t n, const uint64_t *row, const uint64_t *col,
-              const double *mat, const double *x, double *y) {
+void spmv_rvv(uint64_t n, const uint64_t *__restrict row,
+              const uint64_t *__restrict col, const double *__restrict mat,
+              const double *__restrict x, double *__restrict y) {
 
   for (uint64_t i = 0; i < n; i++) {
     uint64_t vlmax = vsetvlmax_e64m1();
@@ -44,8 +46,9 @@ void spmv_rvv(uint64_t n, const uint64_t *row, const uint64_t *col,
   }
 }
 
-void spmv_rvv2(uint64_t n, const uint64_t *row, const uint64_t *col,
-               const double *mat, const double *x, double *y) {
+void spmv_rvv2(uint64_t n, const uint64_t *__restrict row,
+               const uint64_t *__restrict col, const double *__restrict mat,
+               const double *__restrict x, double *__restrict y) {
 
   uint64_t vlmax = vsetvlmax_e64m1();
   for (uint64_t i = 0; i < n; i++) {
