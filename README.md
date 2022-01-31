@@ -10,5 +10,6 @@ Kernels included:
 - nrm2
 - gemm
 - spmv
+- stencil
 
 Generated assemblies are also provided in this repo for reference.
