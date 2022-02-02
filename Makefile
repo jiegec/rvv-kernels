@@ -7,7 +7,10 @@ CFLAGS := --target=riscv64-unknown-elf -march=rv64gcv1p0 -menable-experimental-e
 BINS := bin/spmv bin/axpy
 ASMS := spmv.S axpy.S gemm.S memcpy.S dot.S nrm2.S asum.S stencil.S
 
-all: $(BINS) $(ASMS)
+all: $(BINS) $(ASMS) toolchain-version
+
+toolchain-version: $(LLVM)/bin/clang++
+	$(LLVM)/bin/clang++ --version > $@
 
 spike-%: bin/%
 	$(SPIKE) --isa=rv64gcv $(PK) $^
@@ -32,4 +35,4 @@ bin/axpy: axpy.o axpy_main.o common.o
 	$(LLVM)/bin/llvm-objdump --mattr=+v -S $^ > $@
 
 clean:
-	rm -rf *.o *.S bin/*
+	rm -rf *.o *.S bin/* toolchain-version
