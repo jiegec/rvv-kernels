@@ -26,16 +26,41 @@ void test_axpy_inner(uint64_t n, double a, const double *__restrict x,
 }
 
 void test_l1dist(uint64_t n, double *__restrict res, const double *__restrict x,
-               const double *__restrict y) {
+                 const double *__restrict y) {
   for (int i = 0; i < n; i++) {
     res[i] = abs(x[i]) + abs(y[i]);
   }
 }
 
 void test_l2dist(uint64_t n, double *__restrict res, const double *__restrict x,
-               const double *__restrict y) {
+                 const double *__restrict y) {
   for (int i = 0; i < n; i++) {
     res[i] = sqrt(x[i] * x[i] + y[i] * y[i]);
+  }
+}
+
+void test_sqrt(uint64_t n, double *__restrict x) {
+  for (int i = 0; i < n; i++) {
+    x[i] = sqrt(x[i]);
+  }
+}
+
+void test_exp(uint64_t n, double *__restrict x) {
+  for (int i = 0; i < n; i++) {
+    x[i] = exp(x[i]);
+  }
+}
+
+void test_round(uint64_t n, double *__restrict x) {
+  for (int i = 0; i < n; i++) {
+    x[i] = round(x[i]);
+  }
+}
+
+void test_fpclassify(uint64_t n, int *__restrict c,
+                     const double *__restrict x) {
+  for (int i = 0; i < n; i++) {
+    c[i] = fpclassify(x[i]);
   }
 }
 }

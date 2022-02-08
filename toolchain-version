@@ -1,4 +1,4 @@
-clang version 15.0.0 (https://github.com/llvm/llvm-project.git afd54e1ed1da6730880c5cb7a1f647cd19ac3bc3)
+clang version 15.0.0 (https://github.com/llvm/llvm-project.git ec642ceebc1aacc8b16249df7734b8cf90ae2963)
 Target: x86_64-unknown-linux-gnu
 Thread model: posix
 InstalledDir: /data/llvm/bin

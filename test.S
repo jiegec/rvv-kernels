@@ -165,3 +165,152 @@ test_l2dist:                            # @test_l2dist
 	addi	sp, sp, 48
 	ret
                                         # -- End function
+test_sqrt:                              # @test_sqrt
+	addi	sp, sp, -32
+	sd	ra, 24(sp)                      # 8-byte Folded Spill
+	sd	s0, 16(sp)                      # 8-byte Folded Spill
+	sd	s1, 8(sp)                       # 8-byte Folded Spill
+	beqz	a0, .LBB4_5
+	mv	s0, a1
+	mv	s1, a0
+.LBB4_2:                                # =>This Inner Loop Header: Depth=1
+	fld	ft0, 0(s0)
+	fsqrt.d	fa0, ft0
+	feq.d	a0, fa0, fa0
+	beqz	a0, .LBB4_4
+.LBB4_3:                                #   in Loop: Header=BB4_2 Depth=1
+	fsd	fa0, 0(s0)
+	addi	s1, s1, -1
+	addi	s0, s0, 8
+	bnez	s1, .LBB4_2
+	j	.LBB4_5
+.LBB4_4:                                #   in Loop: Header=BB4_2 Depth=1
+	fmv.d	fa0, ft0
+	call	sqrt
+	j	.LBB4_3
+.LBB4_5:
+	ld	ra, 24(sp)                      # 8-byte Folded Reload
+	ld	s0, 16(sp)                      # 8-byte Folded Reload
+	ld	s1, 8(sp)                       # 8-byte Folded Reload
+	addi	sp, sp, 32
+	ret
+                                        # -- End function
+test_exp:                               # @test_exp
+	addi	sp, sp, -32
+	sd	ra, 24(sp)                      # 8-byte Folded Spill
+	sd	s0, 16(sp)                      # 8-byte Folded Spill
+	sd	s1, 8(sp)                       # 8-byte Folded Spill
+	beqz	a0, .LBB5_3
+	mv	s0, a1
+	mv	s1, a0
+.LBB5_2:                                # =>This Inner Loop Header: Depth=1
+	fld	fa0, 0(s0)
+	call	exp
+	fsd	fa0, 0(s0)
+	addi	s1, s1, -1
+	addi	s0, s0, 8
+	bnez	s1, .LBB5_2
+.LBB5_3:
+	ld	ra, 24(sp)                      # 8-byte Folded Reload
+	ld	s0, 16(sp)                      # 8-byte Folded Reload
+	ld	s1, 8(sp)                       # 8-byte Folded Reload
+	addi	sp, sp, 32
+	ret
+                                        # -- End function
+.LCPI6_0:
+.LCPI6_1:
+test_round:                             # @test_round
+	addi	sp, sp, -32
+	sd	ra, 24(sp)                      # 8-byte Folded Spill
+	sd	s0, 16(sp)                      # 8-byte Folded Spill
+	sd	s1, 8(sp)                       # 8-byte Folded Spill
+	beqz	a0, .LBB6_8
+	li	a2, 4
+	bgeu	a0, a2, .LBB6_3
+	li	a2, 0
+	j	.LBB6_6
+.LBB6_3:
+	lui	a2, %hi(.LCPI6_0)
+	fld	ft0, %lo(.LCPI6_0)(a2)
+	lui	a2, %hi(.LCPI6_1)
+	fld	ft1, %lo(.LCPI6_1)(a2)
+	andi	a2, a0, -4
+	addi	a3, a1, 16
+	mv	a4, a2
+.LBB6_4:                                # =>This Inner Loop Header: Depth=1
+	addi	a5, a3, -16
+	vsetivli	zero, 2, e64, m1, ta, mu
+	vle64.v	v8, (a5)
+	vle64.v	v9, (a3)
+	vfsgnjx.vv	v10, v8, v8
+	vmflt.vf	v0, v10, ft0
+	vfadd.vf	v10, v10, ft1
+	vfcvt.rtz.x.f.v	v10, v10
+	vfcvt.f.x.v	v10, v10
+	vfsgnj.vv	v10, v10, v8
+	vmerge.vvm	v8, v8, v10, v0
+	vfsgnjx.vv	v10, v9, v9
+	vmflt.vf	v0, v10, ft0
+	vfadd.vf	v10, v10, ft1
+	vfcvt.rtz.x.f.v	v10, v10
+	vfcvt.f.x.v	v10, v10
+	vfsgnj.vv	v10, v10, v9
+	vmerge.vvm	v9, v9, v10, v0
+	vse64.v	v8, (a5)
+	vse64.v	v9, (a3)
+	addi	a4, a4, -4
+	addi	a3, a3, 32
+	bnez	a4, .LBB6_4
+	beq	a2, a0, .LBB6_8
+.LBB6_6:
+	slli	a3, a2, 3
+	add	s0, a1, a3
+	sub	s1, a0, a2
+.LBB6_7:                                # =>This Inner Loop Header: Depth=1
+	fld	fa0, 0(s0)
+	call	round@plt
+	fsd	fa0, 0(s0)
+	addi	s1, s1, -1
+	addi	s0, s0, 8
+	bnez	s1, .LBB6_7
+.LBB6_8:
+	ld	ra, 24(sp)                      # 8-byte Folded Reload
+	ld	s0, 16(sp)                      # 8-byte Folded Reload
+	ld	s1, 8(sp)                       # 8-byte Folded Reload
+	addi	sp, sp, 32
+	ret
+                                        # -- End function
+.LCPI7_0:
+.LCPI7_1:
+test_fpclassify:                        # @test_fpclassify
+	beqz	a0, .LBB7_7
+	lui	a3, %hi(.LCPI7_0)
+	fld	ft0, %lo(.LCPI7_0)(a3)
+	lui	a3, %hi(.LCPI7_1)
+	fld	ft1, %lo(.LCPI7_1)(a3)
+	fmv.d.x	ft2, zero
+	j	.LBB7_3
+.LBB7_2:                                #   in Loop: Header=BB7_3 Depth=1
+	sw	a3, 0(a1)
+	addi	a1, a1, 4
+	addi	a0, a0, -1
+	addi	a2, a2, 8
+	beqz	a0, .LBB7_7
+.LBB7_3:                                # =>This Inner Loop Header: Depth=1
+	fld	ft3, 0(a2)
+	feq.d	a4, ft3, ft2
+	li	a3, 2
+	bnez	a4, .LBB7_2
+	feq.d	a3, ft3, ft3
+	beqz	a3, .LBB7_2
+	fabs.d	ft3, ft3
+	feq.d	a4, ft3, ft0
+	li	a3, 1
+	bnez	a4, .LBB7_2
+	flt.d	a3, ft3, ft1
+	xori	a3, a3, 1
+	addi	a3, a3, 3
+	j	.LBB7_2
+.LBB7_7:
+	ret
+                                        # -- End function
