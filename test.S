@@ -314,3 +314,179 @@ test_fpclassify:                        # @test_fpclassify
 .LBB7_7:
 	ret
                                         # -- End function
+test_axpy_valarray:                     # @test_axpy_valarray
+	ld	a2, 0(a1)
+	beqz	a2, .LBB8_6
+	ld	a3, 8(a1)
+	ld	a6, 8(a0)
+	li	a0, 4
+	bltu	a2, a0, .LBB8_3
+	slli	a0, a2, 3
+	add	a1, a3, a0
+	add	a0, a0, a6
+	sltu	a0, a3, a0
+	sltu	a1, a6, a1
+	and	a1, a1, a0
+	beqz	a1, .LBB8_7
+.LBB8_3:
+	li	a7, 0
+	mv	a1, a3
+.LBB8_4:
+	sub	a2, a2, a7
+	slli	a0, a7, 3
+	add	a0, a0, a6
+.LBB8_5:                                # =>This Inner Loop Header: Depth=1
+	fld	ft0, 0(a0)
+	fld	ft1, 0(a1)
+	fmul.d	ft0, ft0, fa0
+	fadd.d	ft0, ft1, ft0
+	fsd	ft0, 0(a1)
+	addi	a1, a1, 8
+	addi	a2, a2, -1
+	addi	a0, a0, 8
+	bnez	a2, .LBB8_5
+.LBB8_6:
+	ret
+.LBB8_7:
+	andi	a7, a2, -4
+	slli	a1, a7, 3
+	add	a1, a1, a3
+	addi	a4, a3, 16
+	addi	a5, a6, 16
+	mv	a3, a7
+.LBB8_8:                                # =>This Inner Loop Header: Depth=1
+	addi	a0, a5, -16
+	vsetivli	zero, 2, e64, m1, ta, mu
+	vle64.v	v8, (a0)
+	vle64.v	v9, (a5)
+	addi	a0, a4, -16
+	vle64.v	v10, (a0)
+	vle64.v	v11, (a4)
+	vfmul.vf	v8, v8, fa0
+	vfmul.vf	v9, v9, fa0
+	vfadd.vv	v8, v10, v8
+	vfadd.vv	v9, v11, v9
+	vse64.v	v8, (a0)
+	vse64.v	v9, (a4)
+	addi	a4, a4, 32
+	addi	a3, a3, -4
+	addi	a5, a5, 32
+	bnez	a3, .LBB8_8
+	bne	a2, a7, .LBB8_4
+	j	.LBB8_6
+                                        # -- End function
+test_axpy_valarray2:                    # @test_axpy_valarray2
+	ld	a2, 0(a0)
+	beqz	a2, .LBB9_9
+	ld	a6, 8(a0)
+	ld	a7, 8(a1)
+	li	a0, 4
+	bgeu	a2, a0, .LBB9_3
+	li	a0, 0
+	j	.LBB9_7
+.LBB9_3:
+	slli	a0, a2, 3
+	add	a3, a7, a0
+	add	a0, a0, a6
+	sltu	a0, a7, a0
+	sltu	a3, a6, a3
+	and	a3, a3, a0
+	li	a0, 0
+	bnez	a3, .LBB9_7
+	andi	a0, a2, -4
+	vsetivli	zero, 2, e64, m1, ta, mu
+	vfmv.v.f	v8, fa0
+	addi	a4, a6, 16
+	addi	a5, a7, 16
+	mv	a3, a0
+.LBB9_5:                                # =>This Inner Loop Header: Depth=1
+	addi	a1, a4, -16
+	vle64.v	v9, (a1)
+	vle64.v	v10, (a4)
+	addi	a1, a5, -16
+	vle64.v	v11, (a1)
+	vle64.v	v12, (a5)
+	vfmacc.vv	v11, v8, v9
+	vfmacc.vv	v12, v8, v10
+	vse64.v	v11, (a1)
+	vse64.v	v12, (a5)
+	addi	a4, a4, 32
+	addi	a3, a3, -4
+	addi	a5, a5, 32
+	bnez	a3, .LBB9_5
+	beq	a2, a0, .LBB9_9
+.LBB9_7:
+	sub	a2, a2, a0
+	slli	a1, a0, 3
+	add	a0, a6, a1
+	add	a1, a1, a7
+.LBB9_8:                                # =>This Inner Loop Header: Depth=1
+	fld	ft0, 0(a0)
+	fld	ft1, 0(a1)
+	fmadd.d	ft0, fa0, ft0, ft1
+	fsd	ft0, 0(a1)
+	addi	a2, a2, -1
+	addi	a0, a0, 8
+	addi	a1, a1, 8
+	bnez	a2, .LBB9_8
+.LBB9_9:
+	ret
+                                        # -- End function
+test_diff:                              # @test_diff
+	ld	a3, 0(a2)
+	li	a4, 2
+	sd	a3, 0(a1)
+	bltu	a0, a4, .LBB10_8
+	addi	a7, a0, -1
+	li	a3, 4
+	li	t0, 1
+	bltu	a7, a3, .LBB10_6
+	addi	a3, a1, 8
+	slli	a4, a0, 3
+	add	a5, a1, a4
+	add	a4, a4, a2
+	sltu	a3, a3, a4
+	sltu	a4, a2, a5
+	and	a3, a3, a4
+	bnez	a3, .LBB10_6
+	andi	a6, a7, -4
+	ori	t0, a6, 1
+	addi	a5, a2, 16
+	addi	a4, a1, 24
+	mv	t2, a6
+.LBB10_4:                               # =>This Inner Loop Header: Depth=1
+	addi	t1, a5, -8
+	vsetivli	zero, 2, e64, m1, ta, mu
+	vle64.v	v8, (t1)
+	addi	a3, a5, 8
+	vle64.v	v9, (a3)
+	addi	a3, a5, -16
+	vle64.v	v10, (a3)
+	vle64.v	v11, (a5)
+	vsub.vv	v8, v8, v10
+	vsub.vv	v9, v9, v11
+	addi	a3, a4, -16
+	vse64.v	v8, (a3)
+	vse64.v	v9, (a4)
+	addi	a5, a5, 32
+	addi	t2, t2, -4
+	addi	a4, a4, 32
+	bnez	t2, .LBB10_4
+	beq	a7, a6, .LBB10_8
+.LBB10_6:
+	sub	a0, a0, t0
+	slli	a3, t0, 3
+	add	a1, a1, a3
+	add	a2, a2, a3
+.LBB10_7:                               # =>This Inner Loop Header: Depth=1
+	ld	a3, 0(a2)
+	ld	a4, -8(a2)
+	sub	a3, a3, a4
+	sd	a3, 0(a1)
+	addi	a0, a0, -1
+	addi	a1, a1, 8
+	addi	a2, a2, 8
+	bnez	a0, .LBB10_7
+.LBB10_8:
+	ret
+                                        # -- End function

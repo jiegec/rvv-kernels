@@ -1,7 +1,9 @@
 
 #include "riscv_vector.h"
 #include <math.h>
+#include <numeric>
 #include <stdlib.h>
+#include <valarray>
 
 extern "C" {
 
@@ -63,4 +65,24 @@ void test_fpclassify(uint64_t n, int *__restrict c,
     c[i] = fpclassify(x[i]);
   }
 }
+
+void test_axpy_valarray(double a, const std::valarray<double> &x,
+                        std::valarray<double> &y) {
+  y += a * x;
+}
+
+void test_axpy_valarray2(double a, const std::valarray<double> &x,
+                         std::valarray<double> &y) {
+  for (size_t i = 0; i < x.size(); i++) {
+    y[i] += a * x[i];
+  }
+}
+
+void test_diff(size_t n, size_t *res, const size_t *x) {
+  res[0] = x[0];
+  for (size_t i = 1;i < n;i++) {
+    res[i] = x[i] - x[i-1];
+  }
+}
+
 }
