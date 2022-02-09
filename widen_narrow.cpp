@@ -10,6 +10,13 @@ void widen_float2double(uint64_t n, double *__restrict dst,
   }
 }
 
+void widen_float2long(uint64_t n, long *__restrict dst,
+                      const float *__restrict src) {
+  for (int i = 0; i < n; i++) {
+    dst[i] = src[i];
+  }
+}
+
 void narrow_double2float(uint64_t n, float *__restrict dst,
                          const double *__restrict src) {
   for (int i = 0; i < n; i++) {
@@ -21,6 +28,14 @@ void fadd_float2double(uint64_t n, double *__restrict dst,
                        const float *__restrict x, const float *__restrict y) {
   for (int i = 0; i < n; i++) {
     dst[i] = x[i] + y[i];
+  }
+}
+
+void fma_float2double(uint64_t n, double *__restrict dst,
+                      const float *__restrict x, const float *__restrict y,
+                      const float *__restrict z) {
+  for (int i = 0; i < n; i++) {
+    dst[i] = x[i] * y[i] + z[i];
   }
 }
 
