@@ -6,9 +6,9 @@ CFLAGS := --target=riscv64-unknown-elf -march=rv64gcv1p0 -menable-experimental-e
 
 BINS := bin/spmv bin/axpy
 ASMS := spmv.S axpy.S gemm.S memcpy.S dot.S nrm2.S asum.S stencil.S test.S
-BITCODES := $(patsubst %.S,%.bc,$(ASMS))
+IRS := $(patsubst %.S,%.ll,$(ASMS))
 
-all: $(BINS) $(ASMS) $(BITCODES) toolchain-version
+all: $(BINS) $(ASMS) $(IRS) toolchain-version
 
 toolchain-version: $(LLVM)/bin/clang++
 	$(LLVM)/bin/clang++ --version > $@
@@ -25,7 +25,7 @@ bin/axpy: axpy.o axpy_main.o common.o
 %.o: %.cpp
 	$(LLVM)/bin/clang++ -c $(CFLAGS) $^ -o $@
 
-%.bc: %.cpp
+%.ll: %.cpp
 	$(LLVM)/bin/clang++ -S -emit-llvm $(CFLAGS) $^ -o $@
 
 %.S: %.cpp
@@ -36,4 +36,4 @@ bin/axpy: axpy.o axpy_main.o common.o
 	$(LLVM)/bin/llvm-objdump --mattr=+v -S $^ > $@
 
 clean:
-	rm -rf *.o *.S *.bc bin/* toolchain-version
+	rm -rf *.o *.S *.ll bin/* toolchain-version
