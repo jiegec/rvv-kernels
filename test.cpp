@@ -7,11 +7,24 @@
 
 extern "C" {
 
-void test_cond(uint64_t n, double *__restrict x) {
+void test_clampf(uint64_t n, double *__restrict x) {
 #pragma clang loop vectorize(enable)
   for (int i = 0; i < n; i++) {
     if (x[i] > 1.0) {
-      x[i] = 0.0;
+      x[i] = 1.0;
+    } else if (x[i] < -1.0) {
+      x[i] = -1.0;
+    }
+  }
+}
+
+void test_clamp(uint64_t n, int *__restrict x) {
+#pragma clang loop vectorize(enable)
+  for (int i = 0; i < n; i++) {
+    if (x[i] > 1) {
+      x[i] = 1;
+    } else if (x[i] < -1) {
+      x[i] = -1;
     }
   }
 }
