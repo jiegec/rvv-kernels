@@ -107,9 +107,9 @@ spmv_rvv:                               # @spmv_rvv
 .LBB1_2:                                #   in Loop: Header=BB1_3 Depth=1
 	vsetvli	zero, t1, e64, m1, tu, mu
 	vfredusum.vs	v8, v9, v8
-	vfmv.f.s	ft0, v8
 	add	t0, t0, a5
-	fsd	ft0, 0(t0)
+	vsetivli	zero, 1, e64, m1, ta, mu
+	vse64.v	v8, (t0)
 	beq	a6, a0, .LBB1_5
 .LBB1_3:                                # =>This Loop Header: Depth=1
                                         #     Child Loop BB1_4 Depth 2

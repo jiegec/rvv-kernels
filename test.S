@@ -405,23 +405,23 @@ test_axpy_valarray:                     # @test_axpy_valarray
 	andi	a7, a2, -4
 	slli	a1, a7, 3
 	add	a1, a1, a3
-	addi	a4, a3, 16
-	addi	a5, a6, 16
+	addi	a4, a6, 16
+	addi	a5, a3, 16
 	mv	a3, a7
 .LBB9_8:                                # =>This Inner Loop Header: Depth=1
-	addi	a0, a5, -16
+	addi	a0, a4, -16
 	vsetivli	zero, 2, e64, m1, ta, mu
 	vle64.v	v8, (a0)
-	vle64.v	v9, (a5)
-	addi	a0, a4, -16
+	vle64.v	v9, (a4)
+	addi	a0, a5, -16
 	vle64.v	v10, (a0)
-	vle64.v	v11, (a4)
+	vle64.v	v11, (a5)
 	vfmul.vf	v8, v8, fa0
 	vfmul.vf	v9, v9, fa0
 	vfadd.vv	v8, v10, v8
 	vfadd.vv	v9, v11, v9
 	vse64.v	v8, (a0)
-	vse64.v	v9, (a4)
+	vse64.v	v9, (a5)
 	addi	a4, a4, 32
 	addi	a3, a3, -4
 	addi	a5, a5, 32
