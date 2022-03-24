@@ -24,8 +24,8 @@ asum:                                   # @asum
 	vsetvli	zero, zero, e64, m1, ta, mu
 	vle64.v	v10, (a5)
 	vle64.v	v11, (a3)
-	vfsgnjx.vv	v10, v10, v10
-	vfsgnjx.vv	v11, v11, v11
+	vfabs.v	v10, v10
+	vfabs.v	v11, v11
 	vfadd.vv	v9, v9, v10
 	vfadd.vv	v8, v8, v11
 	addi	a4, a4, -4

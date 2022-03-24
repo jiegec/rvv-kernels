@@ -84,20 +84,22 @@ test_clamp:                             # @test_clamp
 	slli	a3, a2, 2
 	add	a1, a1, a3
 	sub	a0, a0, a2
-	li	a2, -2
+	li	a2, -1
+	srli	a2, a2, 32
+	li	a3, -2
 	j	.LBB1_10
 .LBB1_8:                                #   in Loop: Header=BB1_10 Depth=1
-	sw	a3, 0(a1)
+	sw	a4, 0(a1)
 .LBB1_9:                                #   in Loop: Header=BB1_10 Depth=1
 	addi	a0, a0, -1
 	addi	a1, a1, 4
 	beqz	a0, .LBB1_6
 .LBB1_10:                               # =>This Inner Loop Header: Depth=1
-	lw	a4, 0(a1)
-	li	a3, 1
-	blt	a3, a4, .LBB1_8
-	li	a3, -1
-	bge	a2, a4, .LBB1_8
+	lw	a5, 0(a1)
+	li	a4, 1
+	blt	a4, a5, .LBB1_8
+	mv	a4, a2
+	bge	a3, a5, .LBB1_8
 	j	.LBB1_9
                                         # -- End function
 test_axpy_inner:                        # @test_axpy_inner
@@ -142,10 +144,10 @@ test_l1dist:                            # @test_l1dist
 	addi	a4, t2, -16
 	vle64.v	v10, (a4)
 	vle64.v	v11, (t2)
-	vfsgnjx.vv	v8, v8, v8
-	vfsgnjx.vv	v9, v9, v9
-	vfsgnjx.vv	v10, v10, v10
-	vfsgnjx.vv	v11, v11, v11
+	vfabs.v	v8, v8
+	vfabs.v	v9, v9
+	vfabs.v	v10, v10
+	vfabs.v	v11, v11
 	vfadd.vv	v8, v8, v10
 	vfadd.vv	v9, v9, v11
 	addi	a4, a5, -16
@@ -296,14 +298,14 @@ test_round:                             # @test_round
 	vsetivli	zero, 2, e64, m1, ta, mu
 	vle64.v	v8, (a5)
 	vle64.v	v9, (a3)
-	vfsgnjx.vv	v10, v8, v8
+	vfabs.v	v10, v8
 	vmflt.vf	v0, v10, ft0
 	vfadd.vf	v10, v10, ft1
 	vfcvt.rtz.x.f.v	v10, v10
 	vfcvt.f.x.v	v10, v10
 	vfsgnj.vv	v10, v10, v8
 	vmerge.vvm	v8, v8, v10, v0
-	vfsgnjx.vv	v10, v9, v9
+	vfabs.v	v10, v9
 	vmflt.vf	v0, v10, ft0
 	vfadd.vf	v10, v10, ft1
 	vfcvt.rtz.x.f.v	v10, v10
