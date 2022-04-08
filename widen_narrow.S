@@ -260,19 +260,16 @@ fadd_mixed2double:                      # @fadd_mixed2double
 	addi	t1, a7, -16
 	vsetivli	zero, 2, e64, m1, ta, mu
 	vle64.v	v8, (t1)
+	vle64.v	v9, (a7)
 	addi	a4, t2, -8
-	vle32.v	v9, (a4)
-	vle32.v	v10, (t2)
-	vle64.v	v11, (a7)
+	vle32.v	v10, (a4)
+	vle32.v	v11, (t2)
 	vsetvli	zero, zero, e32, mf2, ta, mu
-	vfwcvt.f.f.v	v12, v9
-	vfwcvt.f.f.v	v9, v10
-	vsetvli	zero, zero, e64, m1, ta, mu
-	vfadd.vv	v8, v8, v12
-	vfadd.vv	v9, v11, v9
+	vfwadd.wv	v12, v8, v10
+	vfwadd.wv	v8, v9, v11
 	addi	a4, a5, -16
-	vse64.v	v8, (a4)
-	vse64.v	v9, (a5)
+	vse64.v	v12, (a4)
+	vse64.v	v8, (a5)
 	addi	a7, a7, 32
 	addi	t2, t2, 16
 	addi	t0, t0, -4
@@ -490,14 +487,14 @@ sum_float2double:                       # @sum_float2double
 	vsetvli	zero, zero, e32, mf2, ta, mu
 	vle32.v	v10, (a5)
 	vle32.v	v11, (a3)
-	vfwcvt.f.f.v	v12, v10
-	vfwcvt.f.f.v	v10, v11
-	vsetvli	zero, zero, e64, m1, ta, mu
-	vfadd.vv	v9, v9, v12
-	vfadd.vv	v8, v8, v10
+	vmv1r.v	v12, v8
+	vmv1r.v	v8, v9
+	vfwadd.wv	v9, v8, v10
+	vfwadd.wv	v8, v12, v11
 	addi	a4, a4, -4
 	addi	a3, a3, 16
 	bnez	a4, .LBB9_5
+	vsetvli	zero, zero, e64, m1, ta, mu
 	vfadd.vv	v8, v8, v9
 	vfmv.s.f	v9, ft0
 	vfredosum.vs	v8, v8, v9
