@@ -10,6 +10,7 @@ const int REPEAT = 100;
 
 extern "C" {
 void axpy(uint64_t n, double a, const double *x, double *y);
+void axpy_compiler_vectorize(uint64_t n, double a, const double *x, double *y);
 void axpy_rvv(uint64_t n, double a, const double *x, double *y);
 void axpy_rvv2(uint64_t n, double a, const double *x, double *y);
 }
@@ -56,8 +57,16 @@ int main() {
   }
   uint64_t elapsed = get_time_us() - begin;
   double gflops = 2e-3 * N * REPEAT / elapsed;
-  printf("axpy simple: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
+  printf("axpy disable vectorize: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
          gflops);
+
+  begin = get_time_us();
+  for (int i = 0; i < REPEAT; i++) {
+    axpy_compiler_vectorize(N, a, x, y);
+  }
+  elapsed = get_time_us() - begin;
+  gflops = 2e-3 * N * REPEAT / elapsed;
+  printf("spmv compiler vectorize: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {

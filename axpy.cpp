@@ -6,6 +6,15 @@ extern "C" {
 
 void axpy(uint64_t n, double a, const double *__restrict x,
           double *__restrict y) {
+#pragma clang loop vectorize(disable)
+  for (uint64_t i = 0; i < n; i++) {
+    y[i] += a * x[i];
+  }
+}
+
+void axpy_compiler_vectorize(uint64_t n, double a, const double *__restrict x,
+                             double *__restrict y) {
+#pragma clang loop vectorize(enable)
   for (uint64_t i = 0; i < n; i++) {
     y[i] += a * x[i];
   }
