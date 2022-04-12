@@ -66,7 +66,7 @@ int main() {
   }
   elapsed = get_time_us() - begin;
   gflops = 2e-3 * N * REPEAT / elapsed;
-  printf("spmv compiler vectorize: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
+  printf("axpy compiler vectorize: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {
@@ -74,7 +74,7 @@ int main() {
   }
   elapsed = get_time_us() - begin;
   gflops = 2e-3 * N * REPEAT / elapsed;
-  printf("spmv rvv: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
+  printf("axpy rvv: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {
@@ -82,7 +82,7 @@ int main() {
   }
   elapsed = get_time_us() - begin;
   gflops = 2e-3 * N * REPEAT / elapsed;
-  printf("spmv rvv2: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
+  printf("axpy rvv2: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   return 0;
 }
