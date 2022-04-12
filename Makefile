@@ -4,6 +4,7 @@ PK := pk
 # Default to https://github.com/jiegec/riscv-toolchain
 GCC_TOOLCHAIN_DIR := $(HOME)/riscv-toolchain/build
 # Default to system clang 14
+# You can install it from https://apt.llvm.org/
 LLVM := /usr
 CXX := $(LLVM)/bin/clang++-14
 LD := $(GCC_TOOLCHAIN_DIR)/bin/riscv64-unknown-elf-ld
