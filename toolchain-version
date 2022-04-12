@@ -1,4 +1,4 @@
-clang version 15.0.0 (https://github.com/llvm/llvm-project.git be9371659380388a693ec99624e1f3d02f07047f)
-Target: x86_64-unknown-linux-gnu
+Debian clang version 14.0.1-++20220407063018+ec13fed5867f-1~exp1~20220407063103.113
+Target: x86_64-pc-linux-gnu
 Thread model: posix
-InstalledDir: /data/llvm/bin
+InstalledDir: /usr/bin

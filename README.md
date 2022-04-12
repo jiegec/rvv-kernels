@@ -1,6 +1,6 @@
 # rvv-kernels
 
-Implements kernels with RISC-V Vector. Requires upstream LLVM.
+Implements kernels with RISC-V Vector. Requires LLVM 14.
 
 Kernels included:
 

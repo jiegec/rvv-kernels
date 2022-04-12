@@ -144,10 +144,10 @@ test_l1dist:                            # @test_l1dist
 	addi	a4, t2, -16
 	vle64.v	v10, (a4)
 	vle64.v	v11, (t2)
-	vfabs.v	v8, v8
-	vfabs.v	v9, v9
-	vfabs.v	v10, v10
-	vfabs.v	v11, v11
+	vfsgnjx.vv	v8, v8, v8
+	vfsgnjx.vv	v9, v9, v9
+	vfsgnjx.vv	v10, v10, v10
+	vfsgnjx.vv	v11, v11, v11
 	vfadd.vv	v8, v8, v10
 	vfadd.vv	v9, v9, v11
 	addi	a4, a5, -16
@@ -273,101 +273,114 @@ test_exp:                               # @test_exp
 	addi	sp, sp, 32
 	ret
                                         # -- End function
-.LCPI7_0:
-.LCPI7_1:
 test_round:                             # @test_round
-	addi	sp, sp, -32
-	sd	ra, 24(sp)                      # 8-byte Folded Spill
-	sd	s0, 16(sp)                      # 8-byte Folded Spill
-	sd	s1, 8(sp)                       # 8-byte Folded Spill
-	beqz	a0, .LBB7_8
-	li	a2, 4
-	bgeu	a0, a2, .LBB7_3
-	li	a2, 0
-	j	.LBB7_6
-.LBB7_3:
-	lui	a2, %hi(.LCPI7_0)
-	fld	ft0, %lo(.LCPI7_0)(a2)
-	lui	a2, %hi(.LCPI7_1)
-	fld	ft1, %lo(.LCPI7_1)(a2)
-	andi	a2, a0, -4
-	addi	a3, a1, 16
-	mv	a4, a2
-.LBB7_4:                                # =>This Inner Loop Header: Depth=1
-	addi	a5, a3, -16
+	addi	sp, sp, -64
+	sd	ra, 56(sp)                      # 8-byte Folded Spill
+	sd	s0, 48(sp)                      # 8-byte Folded Spill
+	sd	s1, 40(sp)                      # 8-byte Folded Spill
+	sd	s2, 32(sp)                      # 8-byte Folded Spill
+	sd	s3, 24(sp)                      # 8-byte Folded Spill
+	sd	s4, 16(sp)                      # 8-byte Folded Spill
+	csrr	a2, vlenb
+	slli	a2, a2, 1
+	sub	sp, sp, a2
+	beqz	a0, .LBB7_7
+	mv	s2, a1
+	mv	s4, a0
+	li	a0, 1
+	li	s3, 0
+	beq	s4, a0, .LBB7_5
+	andi	s3, s4, -2
+	mv	s1, s3
+	mv	s0, s2
+.LBB7_3:                                # =>This Inner Loop Header: Depth=1
 	vsetivli	zero, 2, e64, m1, ta, mu
-	vle64.v	v8, (a5)
-	vle64.v	v9, (a3)
-	vfabs.v	v10, v8
-	vmflt.vf	v0, v10, ft0
-	vfadd.vf	v10, v10, ft1
-	vfcvt.rtz.x.f.v	v10, v10
-	vfcvt.f.x.v	v10, v10
-	vfsgnj.vv	v10, v10, v8
-	vmerge.vvm	v8, v8, v10, v0
-	vfabs.v	v10, v9
-	vmflt.vf	v0, v10, ft0
-	vfadd.vf	v10, v10, ft1
-	vfcvt.rtz.x.f.v	v10, v10
-	vfcvt.f.x.v	v10, v10
-	vfsgnj.vv	v10, v10, v9
-	vmerge.vvm	v9, v9, v10, v0
-	vse64.v	v8, (a5)
-	vse64.v	v9, (a3)
-	addi	a4, a4, -4
-	addi	a3, a3, 32
-	bnez	a4, .LBB7_4
-	beq	a2, a0, .LBB7_8
-.LBB7_6:
-	slli	a3, a2, 3
-	add	s0, a1, a3
-	sub	s1, a0, a2
-.LBB7_7:                                # =>This Inner Loop Header: Depth=1
+	vle64.v	v8, (s0)
+	csrr	a0, vlenb
+	add	a0, a0, sp
+	addi	a0, a0, 16
+	vs1r.v	v8, (a0)                        # Unknown-size Folded Spill
+	vsetivli	zero, 1, e64, m1, ta, mu
+	vslidedown.vi	v8, v8, 1
+	vfmv.f.s	fa0, v8
+	call	round@plt
+	vsetivli	zero, 2, e64, m1, ta, mu
+	vfmv.v.f	v8, fa0
+	addi	a0, sp, 16
+	vs1r.v	v8, (a0)                        # Unknown-size Folded Spill
+	csrr	a0, vlenb
+	add	a0, a0, sp
+	addi	a0, a0, 16
+	vl1r.v	v8, (a0)                        # Unknown-size Folded Reload
+	vfmv.f.s	fa0, v8
+	call	round@plt
+	vsetivli	zero, 2, e64, m1, tu, mu
+	addi	a0, sp, 16
+	vl1r.v	v8, (a0)                        # Unknown-size Folded Reload
+	vfmv.s.f	v8, fa0
+	vse64.v	v8, (s0)
+	addi	s1, s1, -2
+	addi	s0, s0, 16
+	bnez	s1, .LBB7_3
+	beq	s3, s4, .LBB7_7
+.LBB7_5:
+	slli	a0, s3, 3
+	add	s0, s2, a0
+	sub	s1, s4, s3
+.LBB7_6:                                # =>This Inner Loop Header: Depth=1
 	fld	fa0, 0(s0)
 	call	round@plt
 	fsd	fa0, 0(s0)
 	addi	s1, s1, -1
 	addi	s0, s0, 8
-	bnez	s1, .LBB7_7
-.LBB7_8:
-	ld	ra, 24(sp)                      # 8-byte Folded Reload
-	ld	s0, 16(sp)                      # 8-byte Folded Reload
-	ld	s1, 8(sp)                       # 8-byte Folded Reload
-	addi	sp, sp, 32
+	bnez	s1, .LBB7_6
+.LBB7_7:
+	csrr	a0, vlenb
+	slli	a0, a0, 1
+	add	sp, sp, a0
+	ld	ra, 56(sp)                      # 8-byte Folded Reload
+	ld	s0, 48(sp)                      # 8-byte Folded Reload
+	ld	s1, 40(sp)                      # 8-byte Folded Reload
+	ld	s2, 32(sp)                      # 8-byte Folded Reload
+	ld	s3, 24(sp)                      # 8-byte Folded Reload
+	ld	s4, 16(sp)                      # 8-byte Folded Reload
+	addi	sp, sp, 64
 	ret
                                         # -- End function
 .LCPI8_0:
 .LCPI8_1:
 test_fpclassify:                        # @test_fpclassify
-	beqz	a0, .LBB8_7
+	beqz	a0, .LBB8_8
 	lui	a3, %hi(.LCPI8_0)
 	fld	ft0, %lo(.LCPI8_0)(a3)
 	lui	a3, %hi(.LCPI8_1)
 	fld	ft1, %lo(.LCPI8_1)(a3)
 	fmv.d.x	ft2, zero
-	j	.LBB8_3
-.LBB8_2:                                #   in Loop: Header=BB8_3 Depth=1
+	j	.LBB8_4
+.LBB8_2:                                #   in Loop: Header=BB8_4 Depth=1
+	li	a3, 0
+.LBB8_3:                                #   in Loop: Header=BB8_4 Depth=1
 	sw	a3, 0(a1)
 	addi	a1, a1, 4
 	addi	a0, a0, -1
 	addi	a2, a2, 8
-	beqz	a0, .LBB8_7
-.LBB8_3:                                # =>This Inner Loop Header: Depth=1
+	beqz	a0, .LBB8_8
+.LBB8_4:                                # =>This Inner Loop Header: Depth=1
 	fld	ft3, 0(a2)
 	feq.d	a4, ft3, ft2
 	li	a3, 2
-	bnez	a4, .LBB8_2
+	bnez	a4, .LBB8_3
 	feq.d	a3, ft3, ft3
 	beqz	a3, .LBB8_2
 	fabs.d	ft3, ft3
 	feq.d	a4, ft3, ft0
 	li	a3, 1
-	bnez	a4, .LBB8_2
+	bnez	a4, .LBB8_3
 	flt.d	a3, ft3, ft1
 	xori	a3, a3, 1
 	addi	a3, a3, 3
-	j	.LBB8_2
-.LBB8_7:
+	j	.LBB8_3
+.LBB8_8:
 	ret
                                         # -- End function
 test_axpy_valarray:                     # @test_axpy_valarray
@@ -407,23 +420,23 @@ test_axpy_valarray:                     # @test_axpy_valarray
 	andi	a7, a2, -4
 	slli	a1, a7, 3
 	add	a1, a1, a3
-	addi	a4, a6, 16
-	addi	a5, a3, 16
+	addi	a4, a3, 16
+	addi	a5, a6, 16
 	mv	a3, a7
 .LBB9_8:                                # =>This Inner Loop Header: Depth=1
-	addi	a0, a4, -16
+	addi	a0, a5, -16
 	vsetivli	zero, 2, e64, m1, ta, mu
 	vle64.v	v8, (a0)
-	vle64.v	v9, (a4)
-	addi	a0, a5, -16
+	vle64.v	v9, (a5)
+	addi	a0, a4, -16
 	vle64.v	v10, (a0)
-	vle64.v	v11, (a5)
+	vle64.v	v11, (a4)
 	vfmul.vf	v8, v8, fa0
 	vfmul.vf	v9, v9, fa0
 	vfadd.vv	v8, v10, v8
 	vfadd.vv	v9, v11, v9
 	vse64.v	v8, (a0)
-	vse64.v	v9, (a5)
+	vse64.v	v9, (a4)
 	addi	a4, a4, 32
 	addi	a3, a3, -4
 	addi	a5, a5, 32

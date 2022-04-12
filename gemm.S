@@ -12,8 +12,8 @@ gemm:                                   # @gemm
 	beqz	a0, .LBB0_14
 	li	a6, 0
 	li	a7, 0
-	sltiu	s1, a1, 4
-	xori	s1, s1, 1
+	li	s1, 3
+	sltu	s1, s1, a1
 	addi	s0, a2, -1
 	seqz	s0, s0
 	and	t0, s1, s0
