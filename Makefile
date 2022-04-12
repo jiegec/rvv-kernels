@@ -1,10 +1,13 @@
-LLVM := /llvm
+# Override these variables to your local path
 SPIKE := spike
 PK := pk
-GCC_TOOLCHAIN_DIR := /riscv
-
+# Default to https://github.com/jiegec/riscv-toolchain
+GCC_TOOLCHAIN_DIR := $(HOME)/riscv-toolchain/build
+# Default to system clang 14
+LLVM := /usr
+CXX := $(LLVM)/bin/clang++-14
 LD := $(GCC_TOOLCHAIN_DIR)/bin/riscv64-unknown-elf-ld
-CXX := $(LLVM)/bin/clang++
+
 CFLAGS := -fuse-ld=$(LD) --target=riscv64-unknown-elf -march=rv64gcv1p0 -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=128 -O2 --gcc-toolchain=$(GCC_TOOLCHAIN_DIR)
 
 BINS := bin/spmv bin/axpy
