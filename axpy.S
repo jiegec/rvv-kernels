@@ -14,7 +14,7 @@ axpy:                                   # @axpy
                                         # -- End function
 axpy_compiler_vectorize:                # @axpy_compiler_vectorize
 	beqz	a0, .LBB1_9
-	li	a3, 4
+	li	a3, 8
 	bgeu	a0, a3, .LBB1_3
 	li	a6, 0
 	j	.LBB1_7
@@ -27,26 +27,26 @@ axpy_compiler_vectorize:                # @axpy_compiler_vectorize
 	and	a3, a3, a4
 	li	a6, 0
 	bnez	a3, .LBB1_7
-	andi	a6, a0, -4
-	vsetivli	zero, 2, e64, m1, ta, mu
+	andi	a6, a0, -8
+	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, fa0
-	addi	a4, a1, 16
-	addi	a5, a2, 16
+	addi	a4, a1, 32
+	addi	a5, a2, 32
 	mv	a7, a6
 .LBB1_5:                                # =>This Inner Loop Header: Depth=1
-	addi	a3, a4, -16
+	addi	a3, a4, -32
 	vle64.v	v9, (a3)
 	vle64.v	v10, (a4)
-	addi	a3, a5, -16
+	addi	a3, a5, -32
 	vle64.v	v11, (a3)
 	vle64.v	v12, (a5)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
 	vse64.v	v11, (a3)
 	vse64.v	v12, (a5)
-	addi	a4, a4, 32
-	addi	a7, a7, -4
-	addi	a5, a5, 32
+	addi	a4, a4, 64
+	addi	a7, a7, -8
+	addi	a5, a5, 64
 	bnez	a7, .LBB1_5
 	beq	a6, a0, .LBB1_9
 .LBB1_7:
@@ -111,7 +111,7 @@ axpy_rvv2:                              # @axpy_rvv2
 	bgeu	a3, a0, .LBB3_12
 .LBB3_5:
 	sub	a7, a0, a3
-	li	a4, 4
+	li	a4, 8
 	bltu	a7, a4, .LBB3_10
 	slli	a4, a3, 3
 	add	a6, a2, a4
@@ -123,28 +123,28 @@ axpy_rvv2:                              # @axpy_rvv2
 	sltu	a5, t1, t0
 	and	a5, a6, a5
 	bnez	a5, .LBB3_10
-	andi	a6, a7, -4
+	andi	a6, a7, -8
 	add	a3, a3, a6
-	vsetivli	zero, 2, e64, m1, ta, mu
+	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, fa0
-	addi	a4, a4, 16
+	addi	a4, a4, 32
 	add	t1, a1, a4
 	add	a4, a4, a2
 	mv	t0, a6
 .LBB3_8:                                # =>This Inner Loop Header: Depth=1
-	addi	a5, t1, -16
+	addi	a5, t1, -32
 	vle64.v	v9, (a5)
 	vle64.v	v10, (t1)
-	addi	a5, a4, -16
+	addi	a5, a4, -32
 	vle64.v	v11, (a5)
 	vle64.v	v12, (a4)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
 	vse64.v	v11, (a5)
 	vse64.v	v12, (a4)
-	addi	t0, t0, -4
-	addi	t1, t1, 32
-	addi	a4, a4, 32
+	addi	t0, t0, -8
+	addi	t1, t1, 64
+	addi	a4, a4, 64
 	bnez	t0, .LBB3_8
 	beq	a7, a6, .LBB3_12
 .LBB3_10:

@@ -1,6 +1,6 @@
 nrm2:                                   # @nrm2
 	beqz	a0, .LBB0_3
-	li	a2, 4
+	li	a2, 8
 	bgeu	a0, a2, .LBB0_4
 	li	a2, 0
 	fmv.d.x	fa0, zero
@@ -9,25 +9,25 @@ nrm2:                                   # @nrm2
 	fmv.d.x	fa0, zero
 	j	.LBB0_9
 .LBB0_4:
-	andi	a2, a0, -4
-	addi	a3, a1, 16
+	andi	a2, a0, -8
+	addi	a3, a1, 32
 	fmv.d.x	ft0, zero
 	fneg.d	ft0, ft0
-	vsetivli	zero, 2, e64, m1, ta, mu
+	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, ft0
 	vsetvli	zero, zero, e64, m1, tu, mu
 	vmv.v.v	v9, v8
 	vmv.s.x	v9, zero
 	mv	a4, a2
 .LBB0_5:                                # =>This Inner Loop Header: Depth=1
-	addi	a5, a3, -16
+	addi	a5, a3, -32
 	vsetvli	zero, zero, e64, m1, ta, mu
 	vle64.v	v10, (a5)
 	vle64.v	v11, (a3)
 	vfmacc.vv	v9, v10, v10
 	vfmacc.vv	v8, v11, v11
-	addi	a4, a4, -4
-	addi	a3, a3, 32
+	addi	a4, a4, -8
+	addi	a3, a3, 64
 	bnez	a4, .LBB0_5
 	vfadd.vv	v8, v8, v9
 	vfmv.s.f	v9, ft0

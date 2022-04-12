@@ -20,6 +20,7 @@ int main() {
   double y[N];
   double y1[N];
   double y2[N];
+  double y3[N];
 
   // each row has M non zero elements
   for (int i = 0; i < N; i++) {
@@ -28,12 +29,14 @@ int main() {
     y[i] = val;
     y1[i] = val;
     y2[i] = val;
+    y3[i] = val;
   }
   double a = (double)rand() / RAND_MAX;
 
   axpy(N, a, x, y);
-  axpy_rvv(N, a, x, y1);
-  axpy_rvv2(N, a, x, y2);
+  axpy_compiler_vectorize(N, a, x, y1);
+  axpy_rvv(N, a, x, y2);
+  axpy_rvv2(N, a, x, y3);
 
   for (int i = 0; i < N; i++) {
     if (fabs(y[i] - y1[i]) > 1e-6) {
@@ -44,6 +47,13 @@ int main() {
 
   for (int i = 0; i < N; i++) {
     if (fabs(y[i] - y2[i]) > 1e-6) {
+      printf("Mismatch at %d: %lf and %lf\n", i, y[i], y1[i]);
+      return 1;
+    }
+  }
+
+  for (int i = 0; i < N; i++) {
+    if (fabs(y[i] - y3[i]) > 1e-6) {
       printf("Mismatch at %d: %lf and %lf\n", i, y[i], y1[i]);
       return 1;
     }

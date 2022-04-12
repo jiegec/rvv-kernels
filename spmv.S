@@ -49,12 +49,12 @@ spmv_compiler_vectorize:                # @spmv_compiler_vectorize
 	beqz	a0, .LBB1_11
 	li	a7, 0
 	ld	t2, 0(a1)
-	addi	a6, a3, 16
-	addi	t0, a2, 16
+	addi	a6, a3, 32
+	addi	t0, a2, 32
 	fmv.d.x	ft0, zero
-	li	t1, 4
+	li	t1, 8
 	fneg.d	ft1, ft0
-	vsetivli	zero, 2, e64, m1, ta, mu
+	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, ft1
 	vsetvli	zero, zero, e64, m1, tu, mu
 	vmv.v.v	v9, v8
@@ -84,7 +84,7 @@ spmv_compiler_vectorize:                # @spmv_compiler_vectorize
 	fmv.d	ft1, ft0
 	j	.LBB1_9
 .LBB1_6:                                #   in Loop: Header=BB1_3 Depth=1
-	andi	t6, t5, -4
+	andi	t6, t5, -8
 	add	t4, s0, t6
 	slli	s0, s0, 3
 	add	s2, a6, s0
@@ -94,10 +94,10 @@ spmv_compiler_vectorize:                # @spmv_compiler_vectorize
 	vmv1r.v	v12, v8
 .LBB1_7:                                #   Parent Loop BB1_3 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	vsetivli	zero, 2, e64, m1, ta, mu
-	addi	s0, s1, -16
+	vsetivli	zero, 4, e64, m1, ta, mu
+	addi	s0, s1, -32
 	vle64.v	v13, (s0)
-	addi	s0, s2, -16
+	addi	s0, s2, -32
 	vle64.v	v14, (s0)
 	vle64.v	v15, (s1)
 	vle64.v	v16, (s2)
@@ -107,9 +107,9 @@ spmv_compiler_vectorize:                # @spmv_compiler_vectorize
 	vluxei64.v	v15, (a4), v15
 	vfmacc.vv	v11, v14, v13
 	vfmacc.vv	v12, v16, v15
-	addi	s3, s3, -4
-	addi	s2, s2, 32
-	addi	s1, s1, 32
+	addi	s3, s3, -8
+	addi	s2, s2, 64
+	addi	s1, s1, 64
 	bnez	s3, .LBB1_7
 	vfadd.vv	v11, v12, v11
 	vfredosum.vs	v11, v11, v10

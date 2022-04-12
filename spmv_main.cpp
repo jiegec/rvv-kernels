@@ -44,6 +44,17 @@ int main() {
   row[N] = M * N;
 
   spmv(N, row, col, mat, x, y);
+
+  spmv_compiler_vectorize(N, row, col, mat, x, y1);
+
+  for (int i = 0; i < N; i++) {
+    if (fabs(y[i] - y1[i]) > 1e-6) {
+      printf("Mismatch at %d: %lf and %lf\n", i, y[i], y1[i]);
+      return 1;
+    }
+  }
+
+  // check answer
   spmv_rvv(N, row, col, mat, x, y1);
 
   for (int i = 0; i < N; i++) {

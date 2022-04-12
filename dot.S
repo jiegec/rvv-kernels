@@ -1,6 +1,6 @@
 dot:                                    # @dot
 	beqz	a0, .LBB0_3
-	li	a3, 4
+	li	a3, 8
 	bgeu	a0, a3, .LBB0_4
 	li	a6, 0
 	fmv.d.x	fa0, zero
@@ -9,30 +9,30 @@ dot:                                    # @dot
 	fmv.d.x	fa0, zero
 	ret
 .LBB0_4:
-	andi	a6, a0, -4
-	addi	t0, a1, 16
-	addi	a5, a2, 16
+	andi	a6, a0, -8
+	addi	t0, a1, 32
+	addi	a5, a2, 32
 	fmv.d.x	ft0, zero
 	fneg.d	ft0, ft0
-	vsetivli	zero, 2, e64, m1, ta, mu
+	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, ft0
 	vsetvli	zero, zero, e64, m1, tu, mu
 	vmv.v.v	v9, v8
 	vmv.s.x	v9, zero
 	mv	a3, a6
 .LBB0_5:                                # =>This Inner Loop Header: Depth=1
-	addi	a7, t0, -16
+	addi	a7, t0, -32
 	vsetvli	zero, zero, e64, m1, ta, mu
 	vle64.v	v10, (a7)
 	vle64.v	v11, (t0)
-	addi	a4, a5, -16
+	addi	a4, a5, -32
 	vle64.v	v12, (a4)
 	vle64.v	v13, (a5)
 	vfmacc.vv	v9, v10, v12
 	vfmacc.vv	v8, v11, v13
-	addi	t0, t0, 32
-	addi	a3, a3, -4
-	addi	a5, a5, 32
+	addi	t0, t0, 64
+	addi	a3, a3, -8
+	addi	a5, a5, 64
 	bnez	a3, .LBB0_5
 	vfadd.vv	v8, v8, v9
 	vfmv.s.f	v9, ft0

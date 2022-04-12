@@ -65,20 +65,20 @@ gemm_compiler_vectorize:                # @gemm_compiler_vectorize
 	beqz	a0, .LBB1_14
 	li	a6, 0
 	li	a7, 0
-	li	s1, 3
+	li	s1, 7
 	sltu	s1, s1, a1
 	addi	s0, a2, -1
 	seqz	s0, s0
 	and	t0, s1, s0
-	andi	t1, a1, -4
-	addi	t2, a3, 16
+	andi	t1, a1, -8
+	addi	t2, a3, 32
 	slli	t3, a1, 3
-	addi	t4, a4, 16
-	slli	t5, a2, 5
+	addi	t4, a4, 32
+	slli	t5, a2, 6
 	slli	t6, a2, 3
 	fmv.d.x	ft0, zero
 	fneg.d	ft0, ft0
-	vsetivli	zero, 2, e64, m1, ta, mu
+	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, ft0
 	vfmv.s.f	v9, ft0
 	j	.LBB1_3
@@ -122,17 +122,17 @@ gemm_compiler_vectorize:                # @gemm_compiler_vectorize
 .LBB1_9:                                #   Parent Loop BB1_3 Depth=1
                                         #     Parent Loop BB1_6 Depth=2
                                         # =>    This Inner Loop Header: Depth=3
-	addi	s7, s1, -16
+	addi	s7, s1, -32
 	vsetvli	zero, zero, e64, m1, ta, mu
 	vle64.v	v12, (s7)
 	vle64.v	v13, (s1)
-	addi	s0, s8, -16
+	addi	s0, s8, -32
 	vle64.v	v14, (s0)
 	vle64.v	v15, (s8)
 	vfmacc.vv	v10, v12, v14
 	vfmacc.vv	v11, v13, v15
-	addi	s1, s1, 32
-	addi	s6, s6, -4
+	addi	s1, s1, 64
+	addi	s6, s6, -8
 	add	s8, s8, t5
 	bnez	s6, .LBB1_9
 	vfadd.vv	v10, v11, v10
