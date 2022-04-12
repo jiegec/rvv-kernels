@@ -7,6 +7,19 @@ void spmv(uint64_t n, const uint64_t *__restrict row,
           const double *__restrict x, double *__restrict y) {
   for (uint64_t i = 0; i < n; i++) {
     double s = 0;
+#pragma clang loop vectorize(disable)
+    for (uint64_t p = row[i]; p < row[i + 1]; p++) {
+      s += mat[p] * x[col[p]];
+    }
+    y[i] = s;
+  }
+}
+
+void spmv_compiler_vectorize(uint64_t n, const uint64_t *__restrict row,
+          const uint64_t *__restrict col, const double *__restrict mat,
+          const double *__restrict x, double *__restrict y) {
+  for (uint64_t i = 0; i < n; i++) {
+    double s = 0;
 #pragma clang loop vectorize(enable)
     for (uint64_t p = row[i]; p < row[i + 1]; p++) {
       s += mat[p] * x[col[p]];

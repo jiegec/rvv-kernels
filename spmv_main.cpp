@@ -12,6 +12,9 @@ const int REPEAT = 100;
 extern "C" {
 void spmv(uint64_t n, const uint64_t *row, const uint64_t *col,
           const double *mat, const double *x, double *y);
+void spmv_compiler_vectorize(uint64_t n, const uint64_t *row,
+                             const uint64_t *col, const double *mat,
+                             const double *x, double *y);
 void spmv_rvv(uint64_t n, const uint64_t *row, const uint64_t *col,
               const double *mat, const double *x, double *y);
 void spmv_rvv2(uint64_t n, const uint64_t *row, const uint64_t *col,
@@ -66,8 +69,16 @@ int main() {
   }
   uint64_t elapsed = get_time_us() - begin;
   double gflops = 2e-3 * N * M * REPEAT / elapsed;
-  printf("spmv simple: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
+  printf("spmv disable vectorize: %.2f us %.2f gflops\n", (double)elapsed / REPEAT,
          gflops);
+
+  begin = get_time_us();
+  for (int i = 0; i < REPEAT; i++) {
+    spmv_compiler_vectorize(N, row, col, mat, x, y1);
+  }
+  elapsed = get_time_us() - begin;
+  gflops = 2e-3 * N * M * REPEAT / elapsed;
+  printf("spmv compiler vectorize: %.2f us %.2f gflops\n", (double)elapsed / REPEAT, gflops);
 
   begin = get_time_us();
   for (int i = 0; i < REPEAT; i++) {
