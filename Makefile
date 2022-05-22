@@ -14,7 +14,8 @@ LLVM := /usr
 CXX := $(LLVM)/bin/clang++-14
 LD := $(GCC_TOOLCHAIN_DIR)/bin/$(TARGET)-ld
 
-CFLAGS := -fuse-ld=$(LD) --target=$(TARGET) -march=rv64gcv1p0 -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=256 -O2 --gcc-toolchain=$(GCC_TOOLCHAIN_DIR)
+CFLAGS := --target=$(TARGET) -march=rv64gcv1p0 -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=256 -O2 --gcc-toolchain=$(GCC_TOOLCHAIN_DIR)
+LDFLAGS := -fuse-ld=$(LD) $(CFLAGS)
 
 BINS := bin/spmv bin/axpy
 ASMS := spmv.S axpy.S gemm.S memcpy.S dot.S nrm2.S asum.S stencil.S test.S widen_narrow.S merge.S spdot.S
@@ -30,10 +31,10 @@ spike-%: bin/%
 	$(SPIKE) --isa=rv64gcv --varch=vlen:256,elen:64 $(PK) $^
 
 bin/spmv: spmv.o spmv_main.o common.o
-	$(CXX) $(CFLAGS) $^ -o $@
+	$(CXX) $(LDFLAGS) $^ -o $@
 
 bin/axpy: axpy.o axpy_main.o common.o
-	$(CXX) $(CFLAGS) $^ -o $@
+	$(CXX) $(LDFLAGS) $^ -o $@
 
 %.o: %.cpp $(CXX)
 	$(CXX) -c $(CFLAGS) $< -o $@
