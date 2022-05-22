@@ -1,6 +1,7 @@
 
 add
 addi
+and
 andi
 auipc
 beq
@@ -45,6 +46,8 @@ fsgnjx.d
 fsqrt.d
 jalr
 ld
+lui
+or
 ori
 slli
 sltu

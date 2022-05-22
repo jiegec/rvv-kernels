@@ -1,7 +1,10 @@
 
 add
-auipc
+addi
+andi
+beq
 bgeu
+bltu
 c.add
 c.addi
 c.addi16sp
@@ -16,13 +19,16 @@ c.mv
 c.or
 c.sdsp
 c.slli
+c.sub
 fld
 flt.d
 fsd
 fsgnj.d
-jalr
 slli
 sltiu
 sltu
 sub
+vle64.v
+vse64.v
+vsetivli
 xori
