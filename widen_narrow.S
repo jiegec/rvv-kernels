@@ -6,23 +6,23 @@ widen_float2double:                     # @widen_float2double
 	j	.LBB0_6
 .LBB0_3:
 	andi	a6, a0, -8
-	addi	a4, a2, 16
-	addi	a5, a1, 32
-	mv	t0, a6
-.LBB0_4:                                # =>This Inner Loop Header: Depth=1
-	addi	a7, a4, -16
 	vsetivli	zero, 4, e32, mf2, ta, mu
-	vle32.v	v8, (a7)
-	vle32.v	v9, (a4)
+	mv	a4, a6
+	mv	a5, a1
+	mv	a3, a2
+.LBB0_4:                                # =>This Inner Loop Header: Depth=1
+	addi	a7, a3, 16
+	vle32.v	v8, (a3)
+	vle32.v	v9, (a7)
+	addi	a7, a5, 32
 	vfwcvt.f.f.v	v10, v8
 	vfwcvt.f.f.v	v8, v9
-	addi	a3, a5, -32
-	vse64.v	v10, (a3)
-	vse64.v	v8, (a5)
-	addi	a4, a4, 32
-	addi	t0, t0, -8
+	vse64.v	v10, (a5)
+	vse64.v	v8, (a7)
+	addi	a3, a3, 32
+	addi	a4, a4, -8
 	addi	a5, a5, 64
-	bnez	t0, .LBB0_4
+	bnez	a4, .LBB0_4
 	beq	a6, a0, .LBB0_8
 .LBB0_6:
 	slli	a3, a6, 3
@@ -49,23 +49,23 @@ widen_float2long:                       # @widen_float2long
 	j	.LBB1_6
 .LBB1_3:
 	andi	a6, a0, -8
-	addi	a4, a2, 16
-	addi	a5, a1, 32
-	mv	t0, a6
-.LBB1_4:                                # =>This Inner Loop Header: Depth=1
-	addi	a7, a4, -16
 	vsetivli	zero, 4, e32, mf2, ta, mu
-	vle32.v	v8, (a7)
-	vle32.v	v9, (a4)
+	mv	a4, a6
+	mv	a5, a1
+	mv	a3, a2
+.LBB1_4:                                # =>This Inner Loop Header: Depth=1
+	addi	a7, a3, 16
+	vle32.v	v8, (a3)
+	vle32.v	v9, (a7)
+	addi	a7, a5, 32
 	vfwcvt.rtz.x.f.v	v10, v8
 	vfwcvt.rtz.x.f.v	v8, v9
-	addi	a3, a5, -32
-	vse64.v	v10, (a3)
-	vse64.v	v8, (a5)
-	addi	a4, a4, 32
-	addi	t0, t0, -8
+	vse64.v	v10, (a5)
+	vse64.v	v8, (a7)
+	addi	a3, a3, 32
+	addi	a4, a4, -8
 	addi	a5, a5, 64
-	bnez	t0, .LBB1_4
+	bnez	a4, .LBB1_4
 	beq	a6, a0, .LBB1_8
 .LBB1_6:
 	slli	a3, a6, 3
@@ -92,24 +92,23 @@ narrow_double2float:                    # @narrow_double2float
 	j	.LBB2_6
 .LBB2_3:
 	andi	a6, a0, -8
-	addi	a4, a2, 32
-	addi	a5, a1, 16
-	mv	t0, a6
+	mv	a4, a6
+	mv	a5, a1
+	mv	a3, a2
 .LBB2_4:                                # =>This Inner Loop Header: Depth=1
-	addi	a7, a4, -32
-	vsetivli	zero, 4, e64, m1, ta, mu
-	vle64.v	v8, (a7)
-	vle64.v	v9, (a4)
-	vsetvli	zero, zero, e32, mf2, ta, mu
+	addi	a7, a3, 32
+	vsetivli	zero, 4, e32, mf2, ta, mu
+	vle64.v	v8, (a3)
+	vle64.v	v9, (a7)
+	addi	a7, a5, 16
 	vfncvt.f.f.w	v10, v8
 	vfncvt.f.f.w	v8, v9
-	addi	a3, a5, -16
-	vse32.v	v10, (a3)
-	vse32.v	v8, (a5)
-	addi	a4, a4, 64
-	addi	t0, t0, -8
+	vse32.v	v10, (a5)
+	vse32.v	v8, (a7)
+	addi	a3, a3, 64
+	addi	a4, a4, -8
 	addi	a5, a5, 32
-	bnez	t0, .LBB2_4
+	bnez	a4, .LBB2_4
 	beq	a6, a0, .LBB2_8
 .LBB2_6:
 	slli	a3, a6, 2
@@ -130,27 +129,35 @@ narrow_double2float:                    # @narrow_double2float
                                         # -- End function
 fadd_float2double:                      # @fadd_float2double
 	beqz	a0, .LBB3_8
-	li	a4, 4
+	li	a4, 8
 	bgeu	a0, a4, .LBB3_3
 	li	a6, 0
 	j	.LBB3_6
 .LBB3_3:
-	andi	a6, a0, -4
+	andi	a6, a0, -8
+	vsetivli	zero, 4, e32, mf2, ta, mu
 	mv	a7, a6
 	mv	t0, a1
 	mv	a5, a3
 	mv	a4, a2
 .LBB3_4:                                # =>This Inner Loop Header: Depth=1
-	vsetivli	zero, 4, e32, mf2, ta, mu
+	addi	t1, a5, 16
+	addi	t2, a4, 16
 	vle32.v	v8, (a4)
-	vle32.v	v9, (a5)
-	vfadd.vv	v8, v8, v9
-	vfwcvt.f.f.v	v9, v8
-	vse64.v	v9, (t0)
-	addi	a4, a4, 16
-	addi	a5, a5, 16
-	addi	a7, a7, -4
-	addi	t0, t0, 32
+	vle32.v	v9, (t2)
+	vle32.v	v10, (a5)
+	vle32.v	v11, (t1)
+	addi	t1, t0, 32
+	vfadd.vv	v8, v8, v10
+	vfadd.vv	v9, v9, v11
+	vfwcvt.f.f.v	v10, v8
+	vfwcvt.f.f.v	v8, v9
+	vse64.v	v10, (t0)
+	vse64.v	v8, (t1)
+	addi	a4, a4, 32
+	addi	a5, a5, 32
+	addi	a7, a7, -8
+	addi	t0, t0, 64
 	bnez	a7, .LBB3_4
 	beq	a6, a0, .LBB3_8
 .LBB3_6:
@@ -176,30 +183,40 @@ fadd_float2double:                      # @fadd_float2double
                                         # -- End function
 fma_float2double:                       # @fma_float2double
 	beqz	a0, .LBB4_8
-	li	a5, 4
+	li	a5, 8
 	bgeu	a0, a5, .LBB4_3
 	li	a6, 0
 	j	.LBB4_6
 .LBB4_3:
-	andi	a6, a0, -4
+	andi	a6, a0, -8
+	vsetivli	zero, 4, e32, mf2, ta, mu
 	mv	a7, a6
 	mv	t0, a1
 	mv	t1, a4
 	mv	t2, a3
 	mv	a5, a2
 .LBB4_4:                                # =>This Inner Loop Header: Depth=1
-	vsetivli	zero, 4, e32, mf2, ta, mu
+	addi	t3, t1, 16
+	addi	t4, t2, 16
+	addi	t5, a5, 16
 	vle32.v	v8, (a5)
-	vle32.v	v9, (t2)
-	vle32.v	v10, (t1)
-	vfmacc.vv	v10, v8, v9
-	vfwcvt.f.f.v	v8, v10
+	vle32.v	v9, (t5)
+	vle32.v	v10, (t2)
+	vle32.v	v11, (t4)
+	vle32.v	v12, (t1)
+	vle32.v	v13, (t3)
+	addi	t3, t0, 32
+	vfmacc.vv	v12, v8, v10
+	vfmacc.vv	v13, v9, v11
+	vfwcvt.f.f.v	v8, v12
+	vfwcvt.f.f.v	v9, v13
 	vse64.v	v8, (t0)
-	addi	a5, a5, 16
-	addi	t2, t2, 16
-	addi	t1, t1, 16
-	addi	a7, a7, -4
-	addi	t0, t0, 32
+	vse64.v	v9, (t3)
+	addi	a5, a5, 32
+	addi	t2, t2, 32
+	addi	t1, t1, 32
+	addi	a7, a7, -8
+	addi	t0, t0, 64
 	bnez	a7, .LBB4_4
 	beq	a6, a0, .LBB4_8
 .LBB4_6:
@@ -228,29 +245,33 @@ fma_float2double:                       # @fma_float2double
                                         # -- End function
 fadd_mixed2double:                      # @fadd_mixed2double
 	beqz	a0, .LBB5_8
-	li	a4, 4
+	li	a4, 8
 	bgeu	a0, a4, .LBB5_3
 	li	a6, 0
 	j	.LBB5_6
 .LBB5_3:
-	andi	a6, a0, -4
+	andi	a6, a0, -8
 	mv	a7, a6
 	mv	t0, a1
 	mv	a5, a3
 	mv	a4, a2
 .LBB5_4:                                # =>This Inner Loop Header: Depth=1
-	vsetivli	zero, 4, e64, m1, ta, mu
-	vle32.v	v8, (a5)
-	vle64.v	v9, (a4)
-	vsetvli	zero, zero, e32, mf2, ta, mu
-	vfwcvt.f.f.v	v10, v8
-	vsetvli	zero, zero, e64, m1, ta, mu
-	vfadd.vv	v8, v9, v10
-	vse64.v	v8, (t0)
-	addi	a4, a4, 32
-	addi	a5, a5, 16
-	addi	a7, a7, -4
-	addi	t0, t0, 32
+	addi	t1, a5, 16
+	addi	t2, a4, 32
+	vsetivli	zero, 4, e32, mf2, ta, mu
+	vle64.v	v8, (a4)
+	vle64.v	v9, (t2)
+	vle32.v	v10, (a5)
+	vle32.v	v11, (t1)
+	addi	t1, t0, 32
+	vfwadd.wv	v12, v8, v10
+	vfwadd.wv	v8, v9, v11
+	vse64.v	v12, (t0)
+	vse64.v	v8, (t1)
+	addi	a4, a4, 64
+	addi	a5, a5, 32
+	addi	a7, a7, -8
+	addi	t0, t0, 64
 	bnez	a7, .LBB5_4
 	beq	a6, a0, .LBB5_8
 .LBB5_6:
@@ -276,28 +297,36 @@ fadd_mixed2double:                      # @fadd_mixed2double
                                         # -- End function
 add_int2long:                           # @add_int2long
 	beqz	a0, .LBB6_8
-	li	a4, 4
+	li	a4, 8
 	bgeu	a0, a4, .LBB6_3
 	li	a6, 0
 	j	.LBB6_6
 .LBB6_3:
-	andi	a6, a0, -4
+	andi	a6, a0, -8
 	mv	a7, a6
 	mv	t0, a1
 	mv	a5, a3
 	mv	a4, a2
 .LBB6_4:                                # =>This Inner Loop Header: Depth=1
+	addi	t1, a5, 16
+	addi	t2, a4, 16
 	vsetivli	zero, 4, e32, mf2, ta, mu
 	vle32.v	v8, (a4)
-	vle32.v	v9, (a5)
-	vadd.vv	v8, v9, v8
+	vle32.v	v9, (t2)
+	vle32.v	v10, (a5)
+	vle32.v	v11, (t1)
+	addi	t1, t0, 32
+	vadd.vv	v8, v10, v8
+	vadd.vv	v9, v11, v9
 	vsetvli	zero, zero, e64, m1, ta, mu
-	vsext.vf2	v9, v8
-	vse64.v	v9, (t0)
-	addi	a4, a4, 16
-	addi	a5, a5, 16
-	addi	a7, a7, -4
-	addi	t0, t0, 32
+	vsext.vf2	v10, v8
+	vsext.vf2	v8, v9
+	vse64.v	v10, (t0)
+	vse64.v	v8, (t1)
+	addi	a4, a4, 32
+	addi	a5, a5, 32
+	addi	a7, a7, -8
+	addi	t0, t0, 64
 	bnez	a7, .LBB6_4
 	beq	a6, a0, .LBB6_8
 .LBB6_6:
@@ -322,28 +351,36 @@ add_int2long:                           # @add_int2long
                                         # -- End function
 mul_int2long:                           # @mul_int2long
 	beqz	a0, .LBB7_8
-	li	a4, 4
+	li	a4, 8
 	bgeu	a0, a4, .LBB7_3
 	li	a6, 0
 	j	.LBB7_6
 .LBB7_3:
-	andi	a6, a0, -4
+	andi	a6, a0, -8
 	mv	a7, a6
 	mv	t0, a1
 	mv	a5, a3
 	mv	a4, a2
 .LBB7_4:                                # =>This Inner Loop Header: Depth=1
+	addi	t1, a5, 16
+	addi	t2, a4, 16
 	vsetivli	zero, 4, e32, mf2, ta, mu
 	vle32.v	v8, (a4)
-	vle32.v	v9, (a5)
-	vmul.vv	v8, v9, v8
+	vle32.v	v9, (t2)
+	vle32.v	v10, (a5)
+	vle32.v	v11, (t1)
+	addi	t1, t0, 32
+	vmul.vv	v8, v10, v8
+	vmul.vv	v9, v11, v9
 	vsetvli	zero, zero, e64, m1, ta, mu
-	vsext.vf2	v9, v8
-	vse64.v	v9, (t0)
-	addi	a4, a4, 16
-	addi	a5, a5, 16
-	addi	a7, a7, -4
-	addi	t0, t0, 32
+	vsext.vf2	v10, v8
+	vsext.vf2	v8, v9
+	vse64.v	v10, (t0)
+	vse64.v	v8, (t1)
+	addi	a4, a4, 32
+	addi	a5, a5, 32
+	addi	a7, a7, -8
+	addi	t0, t0, 64
 	bnez	a7, .LBB7_4
 	beq	a6, a0, .LBB7_8
 .LBB7_6:
@@ -368,28 +405,36 @@ mul_int2long:                           # @mul_int2long
                                         # -- End function
 mul_uint2ulong:                         # @mul_uint2ulong
 	beqz	a0, .LBB8_8
-	li	a4, 4
+	li	a4, 8
 	bgeu	a0, a4, .LBB8_3
 	li	a6, 0
 	j	.LBB8_6
 .LBB8_3:
-	andi	a6, a0, -4
+	andi	a6, a0, -8
 	mv	a7, a6
 	mv	t0, a1
 	mv	a5, a3
 	mv	a4, a2
 .LBB8_4:                                # =>This Inner Loop Header: Depth=1
+	addi	t1, a5, 16
+	addi	t2, a4, 16
 	vsetivli	zero, 4, e32, mf2, ta, mu
 	vle32.v	v8, (a4)
-	vle32.v	v9, (a5)
-	vmul.vv	v8, v9, v8
+	vle32.v	v9, (t2)
+	vle32.v	v10, (a5)
+	vle32.v	v11, (t1)
+	addi	t1, t0, 32
+	vmul.vv	v8, v10, v8
+	vmul.vv	v9, v11, v9
 	vsetvli	zero, zero, e64, m1, ta, mu
-	vzext.vf2	v9, v8
-	vse64.v	v9, (t0)
-	addi	a4, a4, 16
-	addi	a5, a5, 16
-	addi	a7, a7, -4
-	addi	t0, t0, 32
+	vzext.vf2	v10, v8
+	vzext.vf2	v8, v9
+	vse64.v	v10, (t0)
+	vse64.v	v8, (t1)
+	addi	a4, a4, 32
+	addi	a5, a5, 32
+	addi	a7, a7, -8
+	addi	t0, t0, 64
 	bnez	a7, .LBB8_4
 	beq	a6, a0, .LBB8_8
 .LBB8_6:
@@ -426,7 +471,6 @@ sum_float2double:                       # @sum_float2double
 	ret
 .LBB9_4:
 	andi	a2, a0, -8
-	addi	a3, a1, 16
 	fmv.d.x	ft0, zero
 	fneg.d	ft0, ft0
 	vsetivli	zero, 4, e64, m1, ta, mu
@@ -434,20 +478,21 @@ sum_float2double:                       # @sum_float2double
 	vsetvli	zero, zero, e64, m1, tu, mu
 	vmv.v.v	v9, v8
 	vmv.s.x	v9, zero
-	mv	a4, a2
+	mv	a3, a2
+	mv	a4, a1
 .LBB9_5:                                # =>This Inner Loop Header: Depth=1
-	addi	a5, a3, -16
+	addi	a5, a4, 16
 	vsetvli	zero, zero, e32, mf2, ta, mu
-	vle32.v	v10, (a5)
-	vle32.v	v11, (a3)
-	vfwcvt.f.f.v	v12, v10
-	vfwcvt.f.f.v	v10, v11
+	vle32.v	v10, (a4)
+	vle32.v	v11, (a5)
+	vmv1r.v	v12, v8
+	vmv1r.v	v8, v9
+	vfwadd.wv	v9, v8, v10
+	vfwadd.wv	v8, v12, v11
+	addi	a3, a3, -8
+	addi	a4, a4, 32
+	bnez	a3, .LBB9_5
 	vsetvli	zero, zero, e64, m1, ta, mu
-	vfadd.vv	v9, v9, v12
-	vfadd.vv	v8, v8, v10
-	addi	a4, a4, -8
-	addi	a3, a3, 32
-	bnez	a4, .LBB9_5
 	vfadd.vv	v8, v8, v9
 	vfmv.s.f	v9, ft0
 	vfredosum.vs	v8, v8, v9

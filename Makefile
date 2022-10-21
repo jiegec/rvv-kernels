@@ -8,10 +8,10 @@ GCC_TOOLCHAIN_DIR := /data/riscv-toolchain/build
 # or crosstool-ng
 # GCC_TOOLCHAIN_DIR := ~/x-tools/riscv64-unknown-elf
 
-# Default to system clang 14
+# Default to system clang 15
 # You can install it from https://apt.llvm.org/
 LLVM := /usr
-CXX := $(LLVM)/bin/clang++-14
+CXX := $(LLVM)/bin/clang++-15
 LD := $(GCC_TOOLCHAIN_DIR)/bin/$(TARGET)-ld
 
 CFLAGS := --target=$(TARGET) -march=rv64gcv1p0 -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=256 -O2 --gcc-toolchain=$(GCC_TOOLCHAIN_DIR)

@@ -3,7 +3,6 @@ spdot:                                  # @spdot
 	seqz	a7, a3
 	or	a6, a6, a7
 	bnez	a6, .LBB0_8
-	li	a6, 0
 	li	a7, 0
 	fmv.d.x	fa0, zero
 	j	.LBB0_4

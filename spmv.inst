@@ -10,6 +10,7 @@ c.add
 c.addi
 c.addi16sp
 c.beqz
+c.bnez
 c.j
 c.jr
 c.ldsp
@@ -40,6 +41,7 @@ vmv1r.v
 vmv.s.x
 vmv.v.i
 vmv.v.v
+vse64.v
 vsetivli
 vsetvli
 vsll.vi

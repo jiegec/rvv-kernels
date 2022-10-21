@@ -13,129 +13,128 @@ stencil_2d_5p:                          # @stencil_2d_5p
 	sd	s9, 40(sp)                      # 8-byte Folded Spill
 	sd	s10, 32(sp)                     # 8-byte Folded Spill
 	sd	s11, 24(sp)                     # 8-byte Folded Spill
-	addi	s5, a0, 1
+	addi	s4, a0, 1
 	li	a0, 2
-	bltu	s5, a0, .LBB0_12
-	addi	s6, a1, 2
-	addi	s4, a1, -1
+	bltu	s4, a0, .LBB0_12
+	addi	a0, a1, 2
+	addi	s3, a1, -1
 	addi	a6, a3, 8
-	addi	a7, a1, 1
-	slli	a0, a7, 3
-	add	t0, a3, a0
-	addi	t1, a2, 8
-	add	t2, a2, a0
-	slli	a0, s6, 3
+	slli	s5, a0, 3
+	slli	a0, a1, 3
+	addi	a4, a0, 8
+	add	a7, a3, a4
+	addi	t0, a2, 8
+	add	t1, a2, a4
 	add	a0, a0, a2
+	addi	a0, a0, 16
 	sltu	a0, a6, a0
-	sltu	a4, a2, t0
+	sltu	a4, a2, a7
 	and	a0, a0, a4
 	sd	a0, 16(sp)                      # 8-byte Folded Spill
-	andi	t4, a1, -4
-	ori	a0, t4, 1
+	andi	t3, a1, -4
+	ori	a0, t3, 1
 	sd	a0, 8(sp)                       # 8-byte Folded Spill
 	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, fa0
 	vfmv.v.f	v9, fa2
 	vfmv.v.f	v10, fa3
 	vfmv.v.f	v11, fa4
-	addi	a0, a2, 16
-	sd	a0, 0(sp)                       # 8-byte Folded Spill
-	li	s10, 1
-	li	s3, -2
-	li	t3, 4
+	addi	t5, a1, 1
+	li	s8, 1
+	li	t6, -2
+	li	s2, 12
 	j	.LBB0_4
 .LBB0_2:                                #   in Loop: Header=BB0_4 Depth=1
-	addi	s10, s10, 1
+	addi	s7, s8, 1
 .LBB0_3:                                #   in Loop: Header=BB0_4 Depth=1
-	beq	s10, s5, .LBB0_12
+	mv	s8, s7
+	beq	s7, s4, .LBB0_12
 .LBB0_4:                                # =>This Loop Header: Depth=1
                                         #     Child Loop BB0_8 Depth 2
                                         #     Child Loop BB0_11 Depth 2
-	bgeu	s4, s3, .LBB0_2
-	addi	a0, s10, -1
-	mul	s7, a0, s6
-	mul	s8, s10, s6
-	addi	s10, s10, 1
-	mul	s9, s10, s6
+	bgeu	s3, t6, .LBB0_2
+	addi	s6, s8, -1
+	addi	s7, s8, 1
 	li	s0, 1
-	bltu	a1, t3, .LBB0_10
-	slli	s11, s8, 3
-	add	s2, a6, s11
-	add	t3, t0, s11
-	slli	a5, s9, 3
-	add	s1, t1, a5
-	add	ra, t2, a5
-	slli	t5, s7, 3
-	add	a5, t1, t5
-	add	t5, t5, t2
-	sltu	ra, s2, ra
-	sltu	t6, s1, t3
-	and	a0, ra, t6
-	ld	a4, 16(sp)                      # 8-byte Folded Reload
-	or	t6, a0, a4
-	sltu	t5, s2, t5
-	sltu	a0, a5, t3
-	li	t3, 4
-	and	a0, t5, a0
-	or	a0, t6, a0
-	bnez	a0, .LBB0_10
-	ld	a0, 0(sp)                       # 8-byte Folded Reload
-	add	a0, a0, s11
-	mv	s0, t4
+	bltu	a1, s2, .LBB0_10
+	mul	s10, s5, s8
+	add	t4, a6, s10
+	add	s1, a7, s10
+	mul	a4, s5, s7
+	add	s9, t0, a4
+	add	s11, t1, a4
+	mul	a5, s5, s6
+	add	t2, t0, a5
+	add	ra, t1, a5
+	sltu	s11, t4, s11
+	sltu	a5, s9, s1
+	and	a5, s11, a5
+	ld	a0, 16(sp)                      # 8-byte Folded Reload
+	or	s11, a5, a0
+	sltu	a5, t4, ra
+	sltu	s1, t2, s1
+	and	a5, a5, s1
+	or	a5, s11, a5
+	bnez	a5, .LBB0_10
+	li	s0, 0
+	add	s1, a2, s10
+	mv	a5, t3
 .LBB0_8:                                #   Parent Loop BB0_4 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	addi	a4, a0, -16
-	vle64.v	v12, (a4)
-	vle64.v	v13, (a5)
+	add	a0, s1, s0
+	vle64.v	v12, (a0)
+	add	a4, t2, s0
+	vle64.v	v13, (a4)
 	vfmul.vf	v12, v12, fa1
-	addi	a4, a0, -8
+	addi	a4, a0, 8
 	vle64.v	v14, (a4)
+	addi	a0, a0, 16
 	vle64.v	v15, (a0)
-	vle64.v	v16, (s1)
+	add	a0, s9, s0
+	vle64.v	v16, (a0)
 	vfmacc.vv	v12, v8, v13
 	vfmadd.vv	v14, v9, v12
 	vfmadd.vv	v15, v10, v14
 	vfmadd.vv	v16, v11, v15
-	vse64.v	v16, (s2)
-	addi	s0, s0, -4
-	addi	a5, a5, 32
-	addi	s2, s2, 32
-	addi	s1, s1, 32
-	addi	a0, a0, 32
-	bnez	s0, .LBB0_8
+	add	a0, t4, s0
+	vse64.v	v16, (a0)
+	addi	a5, a5, -4
+	addi	s0, s0, 32
+	bnez	a5, .LBB0_8
 	ld	s0, 8(sp)                       # 8-byte Folded Reload
-	beq	t4, a1, .LBB0_3
+	beq	t3, a1, .LBB0_3
 .LBB0_10:                               #   in Loop: Header=BB0_4 Depth=1
-	sub	a4, a7, s0
-	add	a0, s0, s9
-	slli	a0, a0, 3
-	add	a0, a0, a2
-	add	a5, s0, s8
-	slli	s1, a5, 3
-	add	a5, a3, s1
-	add	s0, s0, s7
-	slli	s0, s0, 3
-	add	s0, s0, a2
+	sub	a0, t5, s0
+	mul	a4, s5, s7
+	slli	s1, s0, 3
+	add	a4, a4, s1
+	add	a4, a4, a2
+	mul	a5, s5, s8
+	add	t2, a5, s1
+	add	a5, a3, t2
+	mul	s0, s5, s6
+	add	s1, s1, s0
 	add	s1, s1, a2
+	add	s0, a2, t2
 .LBB0_11:                               #   Parent Loop BB0_4 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	fld	ft0, -8(s1)
-	fld	ft1, 0(s0)
+	fld	ft0, -8(s0)
+	fld	ft1, 0(s1)
 	fmul.d	ft0, ft0, fa1
-	fld	ft2, 0(s1)
-	fld	ft3, 8(s1)
+	fld	ft2, 0(s0)
+	fld	ft3, 8(s0)
 	fmadd.d	ft0, fa0, ft1, ft0
-	fld	ft1, 0(a0)
+	fld	ft1, 0(a4)
 	fmadd.d	ft0, fa2, ft2, ft0
 	fmadd.d	ft0, fa3, ft3, ft0
-	addi	s1, s1, 8
+	addi	s0, s0, 8
 	fmadd.d	ft0, fa4, ft1, ft0
 	fsd	ft0, 0(a5)
-	addi	a4, a4, -1
-	addi	a0, a0, 8
+	addi	a0, a0, -1
+	addi	a4, a4, 8
 	addi	a5, a5, 8
-	addi	s0, s0, 8
-	bnez	a4, .LBB0_11
+	addi	s1, s1, 8
+	bnez	a0, .LBB0_11
 	j	.LBB0_3
 .LBB0_12:
 	ld	ra, 120(sp)                     # 8-byte Folded Reload
@@ -155,41 +154,37 @@ stencil_2d_5p:                          # @stencil_2d_5p
 	ret
                                         # -- End function
 stencil_2d_9p:                          # @stencil_2d_9p
-	addi	sp, sp, -144
-	sd	ra, 136(sp)                     # 8-byte Folded Spill
-	sd	s0, 128(sp)                     # 8-byte Folded Spill
-	sd	s1, 120(sp)                     # 8-byte Folded Spill
-	sd	s2, 112(sp)                     # 8-byte Folded Spill
-	sd	s3, 104(sp)                     # 8-byte Folded Spill
-	sd	s4, 96(sp)                      # 8-byte Folded Spill
-	sd	s5, 88(sp)                      # 8-byte Folded Spill
-	sd	s6, 80(sp)                      # 8-byte Folded Spill
-	sd	s7, 72(sp)                      # 8-byte Folded Spill
-	sd	s8, 64(sp)                      # 8-byte Folded Spill
-	sd	s9, 56(sp)                      # 8-byte Folded Spill
-	sd	s10, 48(sp)                     # 8-byte Folded Spill
-	sd	s11, 40(sp)                     # 8-byte Folded Spill
-	addi	s4, a0, 1
+	addi	sp, sp, -112
+	sd	ra, 104(sp)                     # 8-byte Folded Spill
+	sd	s0, 96(sp)                      # 8-byte Folded Spill
+	sd	s1, 88(sp)                      # 8-byte Folded Spill
+	sd	s2, 80(sp)                      # 8-byte Folded Spill
+	sd	s3, 72(sp)                      # 8-byte Folded Spill
+	sd	s4, 64(sp)                      # 8-byte Folded Spill
+	sd	s5, 56(sp)                      # 8-byte Folded Spill
+	sd	s6, 48(sp)                      # 8-byte Folded Spill
+	sd	s7, 40(sp)                      # 8-byte Folded Spill
+	sd	s8, 32(sp)                      # 8-byte Folded Spill
+	sd	s9, 24(sp)                      # 8-byte Folded Spill
+	sd	s10, 16(sp)                     # 8-byte Folded Spill
+	sd	s11, 8(sp)                      # 8-byte Folded Spill
+	addi	s3, a0, 1
 	li	a0, 2
-	sd	a2, 32(sp)
-	bltu	s4, a0, .LBB1_12
-	fld	ft0, 32(sp)
-	addi	s5, a1, 2
-	addi	t6, a1, -1
-	addi	a2, a4, 8
-	addi	a7, a1, 1
-	slli	a0, a7, 3
-	add	a5, a4, a0
-	slli	a0, s5, 3
-	add	t1, a3, a0
-	sd	a2, 24(sp)                      # 8-byte Folded Spill
-	sltu	a0, a2, t1
-	sd	a5, 16(sp)                      # 8-byte Folded Spill
-	sltu	a2, a3, a5
-	and	a0, a0, a2
-	sd	a0, 8(sp)                       # 8-byte Folded Spill
-	andi	t3, a1, -4
-	ori	a0, t3, 1
+	bltu	s3, a0, .LBB1_12
+	fmv.d.x	ft0, a2
+	addi	a0, a1, 2
+	addi	s2, a1, -1
+	addi	a6, a4, 8
+	slli	s4, a0, 3
+	slli	a0, a1, 3
+	add	a7, a6, a0
+	add	a0, a0, a3
+	addi	t0, a0, 16
+	sltu	a0, a6, t0
+	sltu	a2, a3, a7
+	and	t1, a0, a2
+	andi	t2, a1, -4
+	ori	a0, t2, 1
 	sd	a0, 0(sp)                       # 8-byte Folded Spill
 	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, fa0
@@ -200,97 +195,92 @@ stencil_2d_9p:                          # @stencil_2d_9p
 	vfmv.v.f	v13, fa6
 	vfmv.v.f	v14, fa7
 	vfmv.v.f	v15, ft0
-	addi	t5, a3, 16
-	li	s9, 1
-	li	s3, -2
-	li	s2, 4
+	addi	t4, a1, 1
+	li	s7, 1
+	li	t5, -2
+	li	t6, 8
 	j	.LBB1_4
 .LBB1_2:                                #   in Loop: Header=BB1_4 Depth=1
-	addi	s9, s9, 1
+	addi	s6, s7, 1
 .LBB1_3:                                #   in Loop: Header=BB1_4 Depth=1
-	beq	s9, s4, .LBB1_12
+	mv	s7, s6
+	beq	s6, s3, .LBB1_12
 .LBB1_4:                                # =>This Loop Header: Depth=1
                                         #     Child Loop BB1_8 Depth 2
                                         #     Child Loop BB1_11 Depth 2
-	bgeu	t6, s3, .LBB1_2
-	addi	a0, s9, -1
-	mul	s8, a0, s5
-	mul	s7, s9, s5
-	addi	s9, s9, 1
-	mul	s6, s9, s5
-	li	s1, 1
-	bltu	a1, s2, .LBB1_10
-	slli	s10, s7, 3
-	ld	a0, 24(sp)                      # 8-byte Folded Reload
-	add	t0, a0, s10
-	ld	a0, 16(sp)                      # 8-byte Folded Reload
-	add	a0, a0, s10
-	slli	a6, s6, 3
-	add	s11, a3, a6
-	add	ra, t1, a6
-	slli	s0, s8, 3
-	add	t4, a3, s0
-	add	t2, t1, s0
-	sltu	ra, t0, ra
-	sltu	a5, s11, a0
-	and	a5, ra, a5
-	ld	a2, 8(sp)                       # 8-byte Folded Reload
-	or	s11, a5, a2
-	sltu	a5, t0, t2
-	sltu	a0, t4, a0
-	and	a0, a0, a5
-	or	a0, s11, a0
-	bnez	a0, .LBB1_10
-	add	s1, t5, s0
-	add	s0, t5, a6
-	add	a0, t5, s10
-	mv	a5, t3
+	bgeu	s2, t5, .LBB1_2
+	addi	s5, s7, -1
+	addi	s6, s7, 1
+	li	a5, 1
+	bltu	a1, t6, .LBB1_10
+	mul	s9, s4, s7
+	add	ra, a6, s9
+	add	s0, a7, s9
+	mul	a2, s4, s6
+	add	s8, a3, a2
+	add	s10, t0, a2
+	mul	s1, s4, s5
+	add	t3, a3, s1
+	add	s11, t0, s1
+	sltu	s10, ra, s10
+	sltu	s1, s8, s0
+	and	s1, s10, s1
+	or	s10, s1, t1
+	sltu	s1, ra, s11
+	sltu	s0, t3, s0
+	and	s0, s0, s1
+	or	s0, s10, s0
+	bnez	s0, .LBB1_10
+	add	s1, a3, s9
+	mv	a5, t2
 .LBB1_8:                                #   Parent Loop BB1_4 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	addi	a2, s1, -8
+	add	a0, t3, s0
+	addi	a2, a0, 8
 	vle64.v	v16, (a2)
-	addi	a2, s1, -16
-	vle64.v	v17, (a2)
+	vle64.v	v17, (a0)
 	vfmul.vf	v16, v16, fa1
-	vle64.v	v18, (s1)
-	addi	a2, a0, -16
-	vle64.v	v19, (a2)
-	addi	a2, a0, -8
+	addi	a0, a0, 16
+	vle64.v	v18, (a0)
+	add	a0, s1, s0
+	vle64.v	v19, (a0)
+	addi	a2, a0, 8
 	vle64.v	v20, (a2)
 	vfmacc.vv	v16, v8, v17
 	vfmadd.vv	v18, v9, v16
 	vfmadd.vv	v19, v10, v18
 	vfmadd.vv	v20, v11, v19
+	addi	a0, a0, 16
 	vle64.v	v16, (a0)
-	addi	a2, s0, -16
-	vle64.v	v17, (a2)
-	addi	a2, s0, -8
+	add	a0, s8, s0
+	vle64.v	v17, (a0)
+	addi	a2, a0, 8
 	vle64.v	v18, (a2)
-	vle64.v	v19, (s0)
+	addi	a0, a0, 16
+	vle64.v	v19, (a0)
 	vfmadd.vv	v16, v12, v20
 	vfmadd.vv	v17, v13, v16
 	vfmadd.vv	v18, v14, v17
 	vfmadd.vv	v19, v15, v18
-	vse64.v	v19, (t0)
+	add	a0, ra, s0
+	vse64.v	v19, (a0)
 	addi	a5, a5, -4
-	addi	t0, t0, 32
-	addi	s1, s1, 32
 	addi	s0, s0, 32
-	addi	a0, a0, 32
 	bnez	a5, .LBB1_8
-	ld	s1, 0(sp)                       # 8-byte Folded Reload
-	beq	t3, a1, .LBB1_3
+	ld	a5, 0(sp)                       # 8-byte Folded Reload
+	beq	t2, a1, .LBB1_3
 .LBB1_10:                               #   in Loop: Header=BB1_4 Depth=1
-	sub	a0, a7, s1
-	add	a2, s1, s8
-	slli	a2, a2, 3
+	sub	a0, t4, a5
+	mul	a2, s4, s5
+	slli	t3, a5, 3
+	add	a2, a2, t3
 	add	a5, a3, a2
-	add	a2, s1, s7
-	slli	s0, a2, 3
+	mul	a2, s4, s7
+	add	s0, a2, t3
 	add	a2, a4, s0
 	add	s0, s0, a3
-	add	s1, s1, s6
-	slli	s1, s1, 3
+	mul	s1, s4, s6
+	add	s1, s1, t3
 	add	s1, s1, a3
 .LBB1_11:                               #   Parent Loop BB1_4 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
@@ -321,19 +311,19 @@ stencil_2d_9p:                          # @stencil_2d_9p
 	bnez	a0, .LBB1_11
 	j	.LBB1_3
 .LBB1_12:
-	ld	ra, 136(sp)                     # 8-byte Folded Reload
-	ld	s0, 128(sp)                     # 8-byte Folded Reload
-	ld	s1, 120(sp)                     # 8-byte Folded Reload
-	ld	s2, 112(sp)                     # 8-byte Folded Reload
-	ld	s3, 104(sp)                     # 8-byte Folded Reload
-	ld	s4, 96(sp)                      # 8-byte Folded Reload
-	ld	s5, 88(sp)                      # 8-byte Folded Reload
-	ld	s6, 80(sp)                      # 8-byte Folded Reload
-	ld	s7, 72(sp)                      # 8-byte Folded Reload
-	ld	s8, 64(sp)                      # 8-byte Folded Reload
-	ld	s9, 56(sp)                      # 8-byte Folded Reload
-	ld	s10, 48(sp)                     # 8-byte Folded Reload
-	ld	s11, 40(sp)                     # 8-byte Folded Reload
-	addi	sp, sp, 144
+	ld	ra, 104(sp)                     # 8-byte Folded Reload
+	ld	s0, 96(sp)                      # 8-byte Folded Reload
+	ld	s1, 88(sp)                      # 8-byte Folded Reload
+	ld	s2, 80(sp)                      # 8-byte Folded Reload
+	ld	s3, 72(sp)                      # 8-byte Folded Reload
+	ld	s4, 64(sp)                      # 8-byte Folded Reload
+	ld	s5, 56(sp)                      # 8-byte Folded Reload
+	ld	s6, 48(sp)                      # 8-byte Folded Reload
+	ld	s7, 40(sp)                      # 8-byte Folded Reload
+	ld	s8, 32(sp)                      # 8-byte Folded Reload
+	ld	s9, 24(sp)                      # 8-byte Folded Reload
+	ld	s10, 16(sp)                     # 8-byte Folded Reload
+	ld	s11, 8(sp)                      # 8-byte Folded Reload
+	addi	sp, sp, 112
 	ret
                                         # -- End function

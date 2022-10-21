@@ -10,7 +10,6 @@ asum:                                   # @asum
 	ret
 .LBB0_4:
 	andi	a2, a0, -8
-	addi	a3, a1, 32
 	fmv.d.x	ft0, zero
 	fneg.d	ft0, ft0
 	vsetivli	zero, 4, e64, m1, ta, mu
@@ -18,19 +17,20 @@ asum:                                   # @asum
 	vsetvli	zero, zero, e64, m1, tu, mu
 	vmv.v.v	v9, v8
 	vmv.s.x	v9, zero
-	mv	a4, a2
+	mv	a3, a2
+	mv	a4, a1
 .LBB0_5:                                # =>This Inner Loop Header: Depth=1
-	addi	a5, a3, -32
+	addi	a5, a4, 32
 	vsetvli	zero, zero, e64, m1, ta, mu
-	vle64.v	v10, (a5)
-	vle64.v	v11, (a3)
-	vfsgnjx.vv	v10, v10, v10
-	vfsgnjx.vv	v11, v11, v11
+	vle64.v	v10, (a4)
+	vle64.v	v11, (a5)
+	vfabs.v	v10, v10
+	vfabs.v	v11, v11
 	vfadd.vv	v9, v9, v10
 	vfadd.vv	v8, v8, v11
-	addi	a4, a4, -8
-	addi	a3, a3, 64
-	bnez	a4, .LBB0_5
+	addi	a3, a3, -8
+	addi	a4, a4, 64
+	bnez	a3, .LBB0_5
 	vfadd.vv	v8, v8, v9
 	vfmv.s.f	v9, ft0
 	vfredosum.vs	v8, v8, v9

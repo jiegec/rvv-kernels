@@ -30,24 +30,24 @@ axpy_compiler_vectorize:                # @axpy_compiler_vectorize
 	andi	a6, a0, -8
 	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, fa0
-	addi	a4, a1, 32
-	addi	a5, a2, 32
-	mv	a7, a6
+	mv	a4, a6
+	mv	a5, a2
+	mv	a3, a1
 .LBB1_5:                                # =>This Inner Loop Header: Depth=1
-	addi	a3, a4, -32
+	addi	a7, a5, 32
+	addi	t0, a3, 32
 	vle64.v	v9, (a3)
-	vle64.v	v10, (a4)
-	addi	a3, a5, -32
-	vle64.v	v11, (a3)
-	vle64.v	v12, (a5)
+	vle64.v	v10, (t0)
+	vle64.v	v11, (a5)
+	vle64.v	v12, (a7)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
-	vse64.v	v11, (a3)
-	vse64.v	v12, (a5)
-	addi	a4, a4, 64
-	addi	a7, a7, -8
+	vse64.v	v11, (a5)
+	vse64.v	v12, (a7)
+	addi	a3, a3, 64
+	addi	a4, a4, -8
 	addi	a5, a5, 64
-	bnez	a7, .LBB1_5
+	bnez	a4, .LBB1_5
 	beq	a6, a0, .LBB1_9
 .LBB1_7:
 	sub	a0, a0, a6
@@ -93,7 +93,7 @@ axpy_rvv2:                              # @axpy_rvv2
 	slli	a6, a7, 3
 .LBB3_2:                                # =>This Inner Loop Header: Depth=1
 	add	a4, a1, a5
-	vsetvli	zero, a7, e64, m1, ta, mu
+	vsetvli	zero, zero, e64, m1, ta, mu
 	vle64.v	v8, (a4)
 	add	a4, a2, a5
 	vle64.v	v9, (a4)
@@ -110,43 +110,40 @@ axpy_rvv2:                              # @axpy_rvv2
 	li	a3, 0
 	bgeu	a3, a0, .LBB3_12
 .LBB3_5:
-	sub	a7, a0, a3
-	li	a4, 8
-	bltu	a7, a4, .LBB3_10
-	slli	a4, a3, 3
-	add	a6, a2, a4
-	slli	a5, a0, 3
-	add	t0, a2, a5
-	add	t1, a1, a4
-	add	a5, a5, a1
-	sltu	a6, a6, a5
-	sltu	a5, t1, t0
-	and	a5, a6, a5
-	bnez	a5, .LBB3_10
-	andi	a6, a7, -8
-	add	a3, a3, a6
+	sub	a6, a0, a3
+	li	a4, 12
+	bltu	a6, a4, .LBB3_10
+	slli	a7, a3, 3
+	add	a5, a2, a7
+	slli	a4, a0, 3
+	add	t1, a2, a4
+	add	t0, a1, a7
+	add	a4, a4, a1
+	sltu	a7, a5, a4
+	sltu	a4, t0, t1
+	and	a4, a7, a4
+	bnez	a4, .LBB3_10
+	andi	a7, a6, -8
+	add	a3, a3, a7
 	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, fa0
-	addi	a4, a4, 32
-	add	t1, a1, a4
-	add	a4, a4, a2
-	mv	t0, a6
+	mv	a4, a7
 .LBB3_8:                                # =>This Inner Loop Header: Depth=1
-	addi	a5, t1, -32
-	vle64.v	v9, (a5)
-	vle64.v	v10, (t1)
-	addi	a5, a4, -32
+	addi	t1, a5, 32
+	addi	t2, t0, 32
+	vle64.v	v9, (t0)
+	vle64.v	v10, (t2)
 	vle64.v	v11, (a5)
-	vle64.v	v12, (a4)
+	vle64.v	v12, (t1)
 	vfmacc.vv	v11, v8, v9
 	vfmacc.vv	v12, v8, v10
 	vse64.v	v11, (a5)
-	vse64.v	v12, (a4)
-	addi	t0, t0, -8
-	addi	t1, t1, 64
-	addi	a4, a4, 64
-	bnez	t0, .LBB3_8
-	beq	a7, a6, .LBB3_12
+	vse64.v	v12, (t1)
+	addi	a4, a4, -8
+	addi	t0, t0, 64
+	addi	a5, a5, 64
+	bnez	a4, .LBB3_8
+	beq	a6, a7, .LBB3_12
 .LBB3_10:
 	sub	a0, a0, a3
 	slli	a3, a3, 3

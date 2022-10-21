@@ -6,7 +6,6 @@ andi
 beq
 bgeu
 bltu
-bne
 c.add
 c.addi
 c.and

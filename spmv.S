@@ -45,99 +45,94 @@ spmv_compiler_vectorize:                # @spmv_compiler_vectorize
 	sd	s0, 24(sp)                      # 8-byte Folded Spill
 	sd	s1, 16(sp)                      # 8-byte Folded Spill
 	sd	s2, 8(sp)                       # 8-byte Folded Spill
-	sd	s3, 0(sp)                       # 8-byte Folded Spill
 	beqz	a0, .LBB1_11
 	li	a7, 0
-	ld	t2, 0(a1)
-	addi	a6, a3, 32
-	addi	t0, a2, 32
+	ld	t0, 0(a1)
 	fmv.d.x	ft0, zero
-	li	t1, 8
+	li	a6, 8
 	fneg.d	ft1, ft0
 	vsetivli	zero, 4, e64, m1, ta, mu
 	vfmv.v.f	v8, ft1
 	vsetvli	zero, zero, e64, m1, tu, mu
 	vmv.v.v	v9, v8
 	vmv.s.x	v9, zero
-	vsetivli	zero, 1, e64, m1, ta, mu
 	vfmv.s.f	v10, ft1
 	j	.LBB1_3
 .LBB1_2:                                #   in Loop: Header=BB1_3 Depth=1
-	slli	s1, t3, 3
+	slli	s1, t1, 3
 	add	s1, s1, a5
 	fsd	ft1, 0(s1)
 	beq	a7, a0, .LBB1_11
 .LBB1_3:                                # =>This Loop Header: Depth=1
                                         #     Child Loop BB1_7 Depth 2
                                         #     Child Loop BB1_10 Depth 2
-	mv	t3, a7
-	mv	s0, t2
+	mv	t1, a7
+	mv	t5, t0
 	addi	a7, a7, 1
-	slli	s1, a7, 3
-	add	s1, s1, a1
-	ld	t2, 0(s1)
+	slli	s0, a7, 3
+	add	s0, s0, a1
+	ld	t0, 0(s0)
 	fmv.d	ft1, ft0
-	bgeu	s0, t2, .LBB1_2
-	sub	t5, t2, s0
-	bgeu	t5, t1, .LBB1_6
-	mv	t4, s0
+	bgeu	t5, t0, .LBB1_2
+	sub	t3, t0, t5
+	bgeu	t3, a6, .LBB1_6
+	mv	t2, t5
 	fmv.d	ft1, ft0
 	j	.LBB1_9
 .LBB1_6:                                #   in Loop: Header=BB1_3 Depth=1
-	andi	t6, t5, -8
-	add	t4, s0, t6
-	slli	s0, s0, 3
-	add	s2, a6, s0
-	add	s1, t0, s0
-	mv	s3, t6
+	andi	t4, t3, -8
+	add	t2, t5, t4
+	slli	s0, t5, 3
+	add	t5, a3, s0
+	add	t6, a2, s0
+	mv	s0, t4
 	vmv1r.v	v11, v9
 	vmv1r.v	v12, v8
 .LBB1_7:                                #   Parent Loop BB1_3 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	vsetivli	zero, 4, e64, m1, ta, mu
-	addi	s0, s1, -32
-	vle64.v	v13, (s0)
-	addi	s0, s2, -32
-	vle64.v	v14, (s0)
-	vle64.v	v15, (s1)
-	vle64.v	v16, (s2)
+	addi	s2, t6, 32
+	addi	s1, t5, 32
+	vsetvli	zero, zero, e64, m1, ta, mu
+	vle64.v	v13, (t6)
+	vle64.v	v14, (t5)
+	vle64.v	v15, (s2)
+	vle64.v	v16, (s1)
 	vsll.vi	v13, v13, 3
 	vluxei64.v	v13, (a4), v13
 	vsll.vi	v15, v15, 3
 	vluxei64.v	v15, (a4), v15
 	vfmacc.vv	v11, v14, v13
 	vfmacc.vv	v12, v16, v15
-	addi	s3, s3, -8
-	addi	s2, s2, 64
-	addi	s1, s1, 64
-	bnez	s3, .LBB1_7
+	addi	s0, s0, -8
+	addi	t5, t5, 64
+	addi	t6, t6, 64
+	bnez	s0, .LBB1_7
 	vfadd.vv	v11, v12, v11
 	vfredosum.vs	v11, v11, v10
 	vfmv.f.s	ft1, v11
-	beq	t5, t6, .LBB1_2
+	beq	t3, t4, .LBB1_2
 .LBB1_9:                                #   in Loop: Header=BB1_3 Depth=1
-	sub	t5, t2, t4
-	slli	s1, t4, 3
-	add	t6, a2, s1
-	add	s1, s1, a3
+	sub	t3, t0, t2
+	slli	s1, t2, 3
+	add	t2, a2, s1
+	add	s0, a3, s1
 .LBB1_10:                               #   Parent Loop BB1_3 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	ld	t4, 0(t6)
-	fld	ft2, 0(s1)
-	slli	s0, t4, 3
-	add	s0, s0, a4
-	fld	ft3, 0(s0)
+	ld	s1, 0(t2)
+	fld	ft2, 0(s0)
+	slli	s1, s1, 3
+	add	s1, s1, a4
+	fld	ft3, 0(s1)
 	fmadd.d	ft1, ft2, ft3, ft1
-	addi	t5, t5, -1
-	addi	t6, t6, 8
-	addi	s1, s1, 8
-	bnez	t5, .LBB1_10
+	addi	t3, t3, -1
+	addi	t2, t2, 8
+	addi	s0, s0, 8
+	bnez	t3, .LBB1_10
 	j	.LBB1_2
 .LBB1_11:
 	ld	s0, 24(sp)                      # 8-byte Folded Reload
 	ld	s1, 16(sp)                      # 8-byte Folded Reload
 	ld	s2, 8(sp)                       # 8-byte Folded Reload
-	ld	s3, 0(sp)                       # 8-byte Folded Reload
 	addi	sp, sp, 32
 	ret
                                         # -- End function
@@ -147,41 +142,41 @@ spmv_rvv:                               # @spmv_rvv
 	li	a7, 8
 	j	.LBB2_3
 .LBB2_2:                                #   in Loop: Header=BB2_3 Depth=1
-	vsetvli	zero, t1, e64, m1, tu, mu
+	vsetvli	t1, zero, e64, m1, tu, mu
 	vfredusum.vs	v8, v9, v8
-	vfmv.f.s	ft0, v8
 	add	t0, t0, a5
-	fsd	ft0, 0(t0)
+	vsetivli	zero, 1, e64, m1, ta, mu
+	vse64.v	v8, (t0)
 	beq	a6, a0, .LBB2_5
 .LBB2_3:                                # =>This Loop Header: Depth=1
                                         #     Child Loop BB2_4 Depth 2
-	vsetvli	t1, zero, e64, m1, ta, mu
+	vsetvli	t0, zero, e64, m1, ta, mu
 	slli	t0, a6, 3
-	add	t2, a1, t0
-	ld	t2, 0(t2)
+	add	t1, a1, t0
+	ld	t1, 0(t1)
 	addi	a6, a6, 1
-	slli	t3, a6, 3
-	add	t3, t3, a1
-	ld	t4, 0(t3)
+	slli	t2, a6, 3
+	add	t2, t2, a1
+	ld	t3, 0(t2)
 	vmv.v.i	v8, 0
 	vmv.v.i	v9, 0
-	bgeu	t2, t4, .LBB2_2
+	bgeu	t1, t3, .LBB2_2
 .LBB2_4:                                #   Parent Loop BB2_3 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	sub	t4, t4, t2
-	vsetvli	t5, t4, e64, m1, ta, mu
-	slli	t4, t2, 3
-	add	t6, a3, t4
-	vle64.v	v10, (t6)
-	add	t4, t4, a2
-	vle64.v	v11, (t4)
+	sub	t3, t3, t1
+	vsetvli	t4, t3, e64, m1, ta, mu
+	slli	t3, t1, 3
+	add	t5, a3, t3
+	vle64.v	v10, (t5)
+	add	t3, t3, a2
+	vle64.v	v11, (t3)
 	vmul.vx	v11, v11, a7
 	vluxei64.v	v11, (a4), v11
-	vsetvli	zero, t5, e64, m1, tu, mu
-	ld	t4, 0(t3)
-	add	t2, t2, t5
+	vsetvli	zero, t4, e64, m1, tu, mu
+	ld	t3, 0(t2)
+	add	t1, t1, t4
 	vfmacc.vv	v9, v10, v11
-	bltu	t2, t4, .LBB2_4
+	bltu	t1, t3, .LBB2_4
 	j	.LBB2_2
 .LBB2_5:
 	ret
