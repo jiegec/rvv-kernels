@@ -26,7 +26,6 @@ fsgnjn.d
 mul
 slli
 sltiu
-sltu
 sub
 vfadd.vv
 vfmacc.vv
@@ -38,3 +37,4 @@ vle64.v
 vmv1r.v
 vsetivli
 vsetvli
+xori
